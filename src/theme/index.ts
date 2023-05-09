@@ -9,6 +9,8 @@ export const THEME = extendTheme(
             },
             gray: {
                 500: '#9F9F9F',
+                200: '#797979', //icone
+                100: '#F1F3F5', //background
             },
             white: '#FFFFFF',
             black: '#000000',

@@ -8,12 +8,13 @@ export function Routes() {
     const {colors} = useTheme();
     const theme = DefaultTheme;
     //theme.colors.background = colors.backgroundColor
+    const user = true
 
 
     return (
         <Box flex={1} bg='backgroundColor'>
             <NavigationContainer theme={theme}>
-                <AuthRoutes />
+               { user ? <AppRotes/> : <AuthRoutes />}
             </NavigationContainer>
         </Box>
     );

@@ -26,6 +26,8 @@ export function SignIn() {
 
     function handleForgotPassword(){
         Alert.alert('Esqueci Senha', 'Email enviado!')
+
+        onClose()
     }
 
 
@@ -92,7 +94,6 @@ export function SignIn() {
                                 mt={3}
                                 mb={5}
                                 onPress={() => {
-                                    onClose()
                                     handleForgotPassword()
                                 }}
                             />
