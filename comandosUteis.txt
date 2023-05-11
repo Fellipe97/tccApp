@@ -1,0 +1,18 @@
+
+
+================ Gerar APK passo a passo ================
+
+eas build -p android
+
+mexer no arquivo eas.json que foi gerado
+"previewAPK": {
+      "android": {
+
+        "buildType": "apk",
+        "distribution": "internal"
+      }
+    },
+
+executar: eas build -p android --profile  previewAPK
+
+==========================================================
