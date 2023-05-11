@@ -49,9 +49,6 @@ function AuthProvider({ children }: AuthProviderProps) {
         setIsLoadingSigIn(true)
         await signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
-                console.log(userCredential)
-                console.log(userCredential.user)
-                console.log('\n\n\n\n\nUID :', userCredential.user.uid)
                 const userRef = doc(db, "users", userCredential.user.uid);
                 const userSnapshot = await getDoc(userRef);
 
