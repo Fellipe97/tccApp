@@ -20,8 +20,7 @@ export const THEME = extendTheme(
             purple: {
                 600: '#8257E6',
                 500: '#9067EE'
-            },
-            backgroundColor: '#F1F3F5'
+            }
         },
         fonts: {
             heading: 'Roboto_700Bold',
