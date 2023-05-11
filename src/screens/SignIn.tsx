@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Alert } from 'react-native';
-import { VStack, HStack, Text, Center, Actionsheet, useDisclose, KeyboardAvoidingView } from 'native-base'
+import { VStack, HStack, Text, Center, Actionsheet, useDisclose, KeyboardAvoidingView, useToast } from 'native-base'
 
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
@@ -9,25 +9,75 @@ import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { Input } from '@components/Input';
 import { ButtonGhost } from '@components/ButtonGhost';
 import { Button } from '@components/Button';
-import LogoSvg from '@assets/logo.svg'
+import LogoSvg from '@assets/logo.svg';
+
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup';
+
+import { useAuth } from '@hooks/auth';
+import { LoadingInitial } from '@components/LoadingInitial';
+
+
+type FormDataPropsSignIn = {
+    email: string;
+    password: string;
+}
+type FormDataPropsForgetPassword = {
+    email: string;
+}
+
+const signInSchema = yup.object({
+    email: yup.string().required('Informe o e-mail.').email('E-mail inválido.'),
+    password: yup.string().required('Informe a senha.').min(6, 'A senha deve ter pelo menos 6 dígitos.'),
+});
+const forgetPasswordSchema = yup.object({
+    email: yup.string().required('Informe o e-mail.').email('E-mail inválido.'),
+});
 
 export function SignIn() {
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
+    const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclose();
+    const { signIn, isLoadingSigIn, isLoadingStorage, redefinePassword, isLoadingRedefinePassword } = useAuth()
 
-    const passwordRef = useRef(null);
+
+    const {
+        control: signInControl,
+        handleSubmit: handleSignInSubmit,
+        formState: { errors: signInErrors }
+    } = useForm<FormDataPropsSignIn>({
+        resolver: yupResolver(signInSchema)
+    });
+    function handleSignIn({ email, password }: FormDataPropsSignIn) {
+        toast.closeAll();
+        console.log('Verificando...')
+        signIn(email, password)
+    }
 
 
+    const {
+        control: forgetPasswordControl,
+        handleSubmit: handleForgetPasswordSubmit,
+        formState: { errors: forgetPasswordErrors }
+    } = useForm<FormDataPropsForgetPassword>({
+        resolver: yupResolver(forgetPasswordSchema)
+    });
+    function handleForgotPassword({ email }: FormDataPropsForgetPassword) {
+        toast.closeAll();
+        redefinePassword(email)
+        onClose()
+    }
 
 
     function handleNewAccount() {
         navigation.navigate('signUp')
     }
 
-    function handleForgotPassword(){
-        Alert.alert('Esqueci Senha', 'Email enviado!')
-
-        onClose()
+    if (isLoadingStorage) {
+        return (
+            <LoadingInitial />
+        )
     }
 
 
@@ -38,15 +88,37 @@ export function SignIn() {
 
             <VStack w={'100%'} mt={12}>
                 <Center>
-                    <Input
-                        placeholder='E-mail'
-                        keyboardType='email-address'
+
+                    <Controller
+                        control={signInControl}
+                        name='email'
+                        render={({ field: { onChange, value } }) => (
+                            <Input
+                                placeholder='E-mail'
+                                keyboardType='email-address'
+                                autoCapitalize='none'
+                                onChangeText={onChange}
+                                value={value}
+                                errorMessage={signInErrors.email?.message}
+                            />
+                        )}
                     />
 
-                    <Input
-                        placeholder='Senha'
-                        secureTextEntry
-                        //returnKeyType='send'
+                    <Controller
+                        control={signInControl}
+                        name='password'
+                        render={({ field: { onChange, value } }) => (
+                            <Input
+                                placeholder='Senha'
+                                secureTextEntry
+                                autoCapitalize='none'
+                                onChangeText={onChange}
+                                value={value}
+                                errorMessage={signInErrors.password?.message}
+                                returnKeyType='send'
+                                onSubmitEditing={handleSignInSubmit(handleSignIn)}
+                            />
+                        )}
                     />
 
                     <ButtonGhost
@@ -57,7 +129,10 @@ export function SignIn() {
                     <Button
                         title='Entrar'
                         mt={10}
+                        onPress={handleSignInSubmit(handleSignIn)}
+                        isLoading={isLoadingSigIn}
                     />
+
 
                     <HStack w={'100%'} mt={6} alignItems='center' justifyContent='center'>
 
@@ -84,18 +159,29 @@ export function SignIn() {
                             <Text color='purple.600' fontFamily='heading' fontSize='xl'>
                                 Recuperar Senha
                             </Text>
-                            <Input
-                                placeholder='E-mail'
-                                //returnKeyType='send'
-                                mt={7}
+                            <Controller
+                                control={forgetPasswordControl}
+                                name='email'
+                                render={({ field: { onChange, value } }) => (
+                                    <Input
+                                        mt={3}
+                                        placeholder='E-mail'
+                                        keyboardType='email-address'
+                                        autoCapitalize='none'
+                                        onChangeText={onChange}
+                                        value={value}
+                                        errorMessage={forgetPasswordErrors.email?.message}
+                                        returnKeyType='send'
+                                        onSubmitEditing={handleForgetPasswordSubmit(handleForgotPassword)}
+                                    />
+                                )}
                             />
                             <Button
                                 title='Enviar'
                                 mt={3}
                                 mb={5}
-                                onPress={() => {
-                                    handleForgotPassword()
-                                }}
+                                onPress={handleForgetPasswordSubmit(handleForgotPassword)}
+                                isLoading={isLoadingRedefinePassword}
                             />
                         </VStack>
                     </Actionsheet.Content>

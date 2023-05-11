@@ -7,6 +7,7 @@ import { THEME } from './src/theme';
 import { LoadingInitial } from '@components/LoadingInitial';
 
 
+import { AuthProvider } from '@hooks/auth';
 import { Routes } from '@routes/index';
 
 
@@ -22,7 +23,9 @@ export default function App() {
         translucent
       />
 
-      {fontsLoaded ? <Routes/> : <LoadingInitial />}
+      <AuthProvider>
+        {fontsLoaded ? <Routes /> : <LoadingInitial />}
+      </AuthProvider>
 
     </NativeBaseProvider>
   );

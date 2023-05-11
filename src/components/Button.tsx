@@ -2,10 +2,11 @@ import { Button as ButtonNativeBase, IButtonProps, Text } from "native-base";
 
 type Props = IButtonProps & {
     title: string;
+    isLoading?: boolean;
 }
 
 
-export function Button({ title, ...rest }: Props) {
+export function Button({ title, isLoading = false, ...rest }: Props) {
     return (
         <ButtonNativeBase
             w="full"
@@ -17,6 +18,8 @@ export function Button({ title, ...rest }: Props) {
                 bg: "purple.500"
             }}
             shadow={7}
+            isLoading={isLoading}
+
             {...rest}
         >
             <Text
