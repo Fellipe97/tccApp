@@ -1,5 +1,4 @@
-//ButtonGhost.tsx
-import { Pressable, Button, IButtonProps, Text } from "native-base";
+import { Pressable, IButtonProps, Text } from "native-base";
 
 type Props = IButtonProps & {
     title: string;
