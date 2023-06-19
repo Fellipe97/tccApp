@@ -1,15 +1,22 @@
+import { forwardRef, ForwardRefRenderFunction, ForwardedRef } from 'react';
+import { TextInput } from 'react-native';
 import { Input as NativeBaseInput, IInputProps, FormControl } from "native-base";
+
+
 
 type Props = IInputProps & {
     errorMessage?: string | null;
 }
 
-export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
+//export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
+const Input: ForwardRefRenderFunction<TextInput, Props> = ({ errorMessage = null, isInvalid, ...rest }, ref: ForwardedRef<TextInput>) => {
+
     const invalid = !!errorMessage || isInvalid;
 
     return (
         <FormControl isInvalid={invalid} mb={4}>
             <NativeBaseInput
+                ref={ref as any} // Converter explicitamente para any para evitar erro de tipo
                 bg="gray.100"
                 h={14}
                 px={4}
@@ -35,3 +42,5 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
         </FormControl>
     );
 }
+
+export default forwardRef(Input);

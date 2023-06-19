@@ -1,12 +1,14 @@
+import React from 'react';
 import { useRef } from 'react';
-import { Alert } from 'react-native';
+import { TextInput } from 'react-native';
+
 import { VStack, HStack, Text, Center, Actionsheet, useDisclose, KeyboardAvoidingView, useToast } from 'native-base'
 
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 
 
-import { Input } from '@components/Input';
+import Input from '@components/Input';
 import { ButtonGhost } from '@components/ButtonGhost';
 import { Button } from '@components/Button';
 import LogoSvg from '@assets/logo.svg';
@@ -37,10 +39,10 @@ const forgetPasswordSchema = yup.object({
 
 export function SignIn() {
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
+    const passwordRef = useRef<TextInput>(null)
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclose();
     const { signIn, isLoadingSigIn, isLoadingStorage, redefinePassword, isLoadingRedefinePassword } = useAuth()
-
 
     const {
         control: signInControl,
@@ -81,6 +83,9 @@ export function SignIn() {
     }
 
 
+      
+
+
     return (
         <VStack mt={10} flex={1} px={12} pb={16} alignItems='center' justifyContent='center'>
 
@@ -100,6 +105,8 @@ export function SignIn() {
                                 onChangeText={onChange}
                                 value={value}
                                 errorMessage={signInErrors.email?.message}
+                                returnKeyType='next'
+                                onSubmitEditing={() => passwordRef.current?.focus()}
                             />
                         )}
                     />
@@ -109,6 +116,7 @@ export function SignIn() {
                         name='password'
                         render={({ field: { onChange, value } }) => (
                             <Input
+                                ref={passwordRef}
                                 placeholder='Senha'
                                 secureTextEntry
                                 autoCapitalize='none'
