@@ -18,6 +18,7 @@ export const THEME = extendTheme(
                 500: '#F75A68',
             },
             purple: {
+                700: '#5A3AA5',
                 600: '#8257E6',
                 500: '#9067EE'
             }
