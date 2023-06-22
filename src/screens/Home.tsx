@@ -11,7 +11,7 @@ import { useAuth } from '@hooks/auth';
 
 export function Home() {
     const navigation = useNavigation();
-    const { signOut } = useAuth()
+    const { signOut, user } = useAuth()
 
 
 
@@ -23,7 +23,7 @@ export function Home() {
     return (
         <>
             <HeaderHome
-                nameUser='Fellipe'
+                nameUser={user!.name.split(" ")[0]}
                 nameSchool='Colegio X'
             />
 

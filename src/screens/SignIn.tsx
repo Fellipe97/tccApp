@@ -51,6 +51,7 @@ export function SignIn() {
     } = useForm<FormDataPropsSignIn>({
         resolver: yupResolver(signInSchema)
     });
+    
     function handleSignIn({ email, password }: FormDataPropsSignIn) {
         toast.closeAll();
         console.log('Verificando...')
@@ -84,8 +85,6 @@ export function SignIn() {
 
 
       
-
-
     return (
         <VStack mt={10} flex={1} px={12} pb={16} alignItems='center' justifyContent='center'>
 
