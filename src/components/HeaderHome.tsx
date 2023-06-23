@@ -46,7 +46,6 @@ export function HeaderHome({ nameUser, nameSchool }: Props) {
                     end: [0, 1]
                 }
             }}
-            shadow={7}
         >
             <Text mt={2} fontSize={'xl'} bold color={'gray.100'}>{dayPeriod}, {nameUser}</Text>
             <Text fontSize={'md'} color={'gray.200'} mb={4} mt={1}>{nameSchool}</Text>
