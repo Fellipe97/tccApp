@@ -3,6 +3,9 @@ import { Text, VStack } from "native-base";
 
 import { useIsFocused } from '@react-navigation/native';
 
+import HeaderHomeSvg from '@assets/headerHome.svg'
+
+
 
 type Props = {
     nameUser: string;
@@ -47,8 +50,10 @@ export function HeaderHome({ nameUser, nameSchool }: Props) {
                 }
             }}
         >
-            <Text mt={2} fontSize={'xl'} bold color={'gray.100'}>{dayPeriod}, {nameUser}</Text>
-            <Text fontSize={'md'} color={'gray.200'} mb={4} mt={1}>{nameSchool}</Text>
+            {/* <HeaderHomeSvg width={'100%'}> */}
+                <Text mt={2} fontSize={'xl'} bold color={'gray.100'}>{dayPeriod}, {nameUser}</Text>
+                <Text fontSize={'md'} color={'gray.200'} mb={4} mt={1}>{nameSchool}</Text>
+            {/* </HeaderHomeSvg> */}
         </VStack>
     )
 }

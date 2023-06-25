@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { Button } from "@components/Button";
 import { HeaderHome } from "@components/HeaderHome";
+import { ButtonCardMenu } from "@components/ButtonCardMenu";
 
 import { useAuth } from '@hooks/auth';
 
@@ -37,29 +38,6 @@ export function Home() {
             photograph: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
         },
     ]
-
-    //tratamento do nome da carteirinha
-    /*      
-    function formatName(fullName: string): string {
-        const names = fullName.split(" ");
-        const firstName = names[0];
-        let lastName = names[names.length - 1];
-
-        if (lastName.length > 10) {
-            lastName = lastName.substring(0, 1) + ".";
-        }
-
-        return firstName + " " + lastName;
-    }
-
-    const nome1 = "Ana Maria de Silva";
-    const nome2 = "Pedro Henrique de Sousa";
-    const nome3 = "Luiz Fellipe de Almeda";
-
-    console.log(formatName(nome1)); // Output: Ana Maria
-    console.log(formatName(nome2)); // Output: Pedro H.
-    console.log(formatName(nome3)); // Output: Luiz Fellipe
-    */
 
     useEffect(()=>{
 
@@ -95,7 +73,6 @@ export function Home() {
                                     bg={'white'}
                                     rounded={10}
                                     shadow={7}
-                                    mt={1}
                                     ml={2}
                                     mr={2}
                                     key={index}
@@ -141,7 +118,17 @@ export function Home() {
                     <Text
                         fontFamily={'heading'}
                         fontSize={'2xl'}
+                        mb={5}
                     >Menu</Text>
+
+                    <HStack justifyContent={'space-between'} mb={5}>
+                        <ButtonCardMenu/>
+                        <ButtonCardMenu/>
+                    </HStack>
+                    <HStack justifyContent={'space-between'}>
+                        <ButtonCardMenu/>
+                        <ButtonCardMenu/>
+                    </HStack>
                 </VStack>
 
 
