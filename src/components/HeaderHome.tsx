@@ -23,14 +23,16 @@ export function HeaderHome({ nameUser, nameSchool }: Props) {
             hour: 'numeric',
         };
         const horaBrasil = new Intl.DateTimeFormat('pt-BR', options).format(dataInicio);
+
+        console.log(horaBrasil)
         if (parseInt(horaBrasil) > -1 && parseInt(horaBrasil) < 12) {
             setDayPeriod('Bom dia')
         }
         if (parseInt(horaBrasil) > 11 && parseInt(horaBrasil) < 18) {
-            setDayPeriod('Boa Tarde')
+            setDayPeriod('Boa tarde')
         }
         if (parseInt(horaBrasil) > 17 && parseInt(horaBrasil) < 24) {
-            setDayPeriod('Boa Noite')
+            setDayPeriod('Boa noite')
         }
         console.log('atualizou')
         //ele atualiza quando sai o focu tb, poderia evitado, como? n sei
@@ -51,8 +53,8 @@ export function HeaderHome({ nameUser, nameSchool }: Props) {
             }}
         >
             {/* <HeaderHomeSvg width={'100%'}> */}
-                <Text mt={2} fontSize={'xl'} bold color={'gray.100'}>{dayPeriod}, {nameUser}</Text>
-                <Text fontSize={'md'} color={'gray.200'} mb={4} mt={1}>{nameSchool}</Text>
+            <Text mt={2} fontSize={'xl'} bold color={'gray.100'}>{dayPeriod}, {nameUser}</Text>
+            <Text fontSize={'md'} color={'gray.200'} mb={4} mt={1}>{nameSchool}</Text>
             {/* </HeaderHomeSvg> */}
         </VStack>
     )
