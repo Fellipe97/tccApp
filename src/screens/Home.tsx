@@ -7,6 +7,11 @@ import { Button } from "@components/Button";
 import { HeaderHome } from "@components/HeaderHome";
 import { ButtonCardMenu } from "@components/ButtonCardMenu";
 
+import IconeFrequencia from "@assets/iconeFrequencia.svg"
+import IconeNotas from "@assets/iconeNotas.svg"
+import IconeComunicados from "@assets/iconeComunicados.svg"
+import IconeFinanceiro from "@assets/iconeFinanceiro.svg"
+
 import { useAuth } from '@hooks/auth';
 
 
@@ -39,9 +44,9 @@ export function Home() {
         },
     ]
 
-    useEffect(()=>{
+    useEffect(() => {
 
-    },[])
+    }, [])
 
     return (
         <>
@@ -76,6 +81,10 @@ export function Home() {
                                     ml={2}
                                     mr={2}
                                     key={index}
+                                    _pressed={{
+                                        opacity: .7
+                                    }}
+                                    onPress={()=>console.log('\nCliquei no aluno: ', {item})}
                                 >
                                     <HStack h={'full'}>
 
@@ -122,21 +131,35 @@ export function Home() {
                     >Menu</Text>
 
                     <HStack justifyContent={'space-between'} mb={5}>
-                        <ButtonCardMenu/>
-                        <ButtonCardMenu/>
+                        <ButtonCardMenu
+                            title='Frequência'
+                            color={'blueButton'}
+                            icone={<IconeFrequencia />}
+                            onPress={() => console.log('cliquei Frequência')}
+                        />
+                        <ButtonCardMenu
+                            title='Notas'
+                            color={'redButton'}
+                            icone={<IconeNotas />}
+                            onPress={() => console.log('cliquei Notas')}
+                        />
                     </HStack>
                     <HStack justifyContent={'space-between'}>
-                        <ButtonCardMenu/>
-                        <ButtonCardMenu/>
+                        <ButtonCardMenu
+                            title='Comunicados'
+                            color={'orangeButton'}
+                            icone={<IconeComunicados />}
+                            onPress={() => console.log('cliquei Comunicados')}
+                        />
+                        <ButtonCardMenu
+                            title='Financeiro'
+                            color={'greenButton'}
+                            icone={<IconeFinanceiro />}
+                            onPress={() => console.log('cliquei Financeiro')}
+                        />
                     </HStack>
                 </VStack>
 
-
-                <Button
-                    title='Teste'
-                    mt={10}
-                //onPress={handleSignOut}
-                />
             </VStack>
         </>
     );
