@@ -1,5 +1,19 @@
 import { useState, useEffect } from 'react'
-import { Text, VStack, Box, HStack, Avatar, ScrollView, Pressable } from "native-base";
+import {
+    Text,
+    VStack,
+    Box,
+    HStack,
+    Avatar,
+    ScrollView,
+    Pressable,
+    Center,
+    Actionsheet,
+    useDisclose,
+    KeyboardAvoidingView,
+    useToast
+} from "native-base";
+
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -13,14 +27,31 @@ import IconeComunicados from "@assets/iconeComunicados.svg"
 import IconeFinanceiro from "@assets/iconeFinanceiro.svg"
 
 import { useAuth } from '@hooks/auth';
+import { ButtonGhost } from '@components/ButtonGhost';
 
+import { StyleSheet } from 'react-native';
+import LogoSvg from '@assets/logo.svg'
+
+
+
+type propsChildren = {
+    name: string;
+    birth: string;
+    registration: string;
+    bloodType: string;
+    photograph: string;
+}
 
 export function Home() {
     const navigation = useNavigation();
     const { user } = useAuth()
-    const school = 'Coégio X'
+    const school = 'Colégio X'
 
-    const children = [
+    const { isOpen, onOpen, onClose } = useDisclose();
+    const [childrenSelected, setChildrenSelected] = useState<propsChildren | null>(null)
+
+
+    const children: propsChildren[] = [
         {
             name: 'Maria Laura da Silva Oliveira',
             birth: '02/09/2010',
@@ -84,7 +115,11 @@ export function Home() {
                                     _pressed={{
                                         opacity: .7
                                     }}
-                                    onPress={()=>console.log('\nCliquei no aluno: ', {item})}
+                                    onPress={() => {
+                                        console.log('\nCliquei no aluno: ', { item })
+                                        setChildrenSelected(item)
+                                        onOpen()
+                                    }}
                                 >
                                     <HStack h={'full'}>
 
@@ -161,6 +196,65 @@ export function Home() {
                 </VStack>
 
             </VStack>
+
+            {/* Pop up carteirinha */}
+            <Actionsheet isOpen={isOpen} onClose={onClose}>
+                <KeyboardAvoidingView
+                    behavior="padding"
+                    w={'100%'}
+                >
+                    <Actionsheet.Content>
+                        <VStack px={9} mt={2} mb={5} w={'100%'} h={'90%'} alignItems='center'>
+
+                            <HStack
+                                justifyContent={'center'}
+                                alignItems={'center'}
+                                h={50}
+                                mb={3}
+                            >
+                                <LogoSvg width={'50px'} height={'50px'} style={{marginRight:1}}/>
+                                <Text color='purple.600' fontFamily='heading' fontSize='2xl'  ml={1}>
+                                    {school}
+                                </Text>
+                            </HStack>
+
+                            <VStack flex={1} alignItems={'center'}>
+
+
+                                <Avatar bg="gray.500" size={'2xl'} shadow={7} mb={5} source={{
+                                    uri: childrenSelected?.photograph
+                                }}>
+                                    ...
+                                </Avatar>
+
+
+                                <Text>{childrenSelected?.name}</Text>
+                                <Text>{childrenSelected?.birth}</Text>
+                                <Text>{childrenSelected?.bloodType}</Text>
+                                <Text>{childrenSelected?.photograph}</Text>
+                                <Text>{childrenSelected?.registration}</Text>
+                            </VStack>
+
+                            <Button
+                                title='Download em PDF'
+                                //mt={3}
+                                mb={5}
+                                onPress={() => {
+                                    console.log('fazendo o download')
+                                    onClose()
+                                }}
+                            //isLoading={isLoadingRedefinePassword}
+                            />
+                            <ButtonGhost
+                                title='Cancelar'
+                                colorButton='cancel'
+                                onPress={onClose}
+                            />
+                        </VStack>
+                    </Actionsheet.Content>
+                </KeyboardAvoidingView>
+            </Actionsheet >
+
         </>
     );
 }
