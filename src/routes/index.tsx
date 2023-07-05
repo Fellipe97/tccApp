@@ -4,7 +4,8 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { useAuth } from '@hooks/auth';
 
 import { AuthRoutes } from './auth.routes';
-import { AppRotes } from './app.routes';
+import { StackAppRoutes } from './stackApp.routes';
+
 
 export function Routes() {
     const { user } = useAuth();
@@ -17,7 +18,7 @@ export function Routes() {
     return (
         <Box flex={1} bg={'gray.100'}>
             <NavigationContainer theme={theme}>
-               { user ? <AppRotes/> : <AuthRoutes />}
+               { user ? <StackAppRoutes/> : <AuthRoutes />}
             </NavigationContainer>
         </Box>
     );

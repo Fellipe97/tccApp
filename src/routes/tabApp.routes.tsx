@@ -12,7 +12,7 @@ import { Calendar } from "@screens/Calendar";
 import { Notifications } from "@screens/Notifications";
 
 
-type AppRoutes = {
+type TabAppRoutes = {
     home: undefined;
     config: undefined;
     contacts: undefined;
@@ -20,12 +20,12 @@ type AppRoutes = {
     notifications: undefined;
 }
 
-export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
+export type TabAppNavigatorRoutesProps = BottomTabNavigationProp<TabAppRoutes>;
 
 
-const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
+const { Navigator, Screen } = createBottomTabNavigator<TabAppRoutes>();
 
-export function AppRotes() {
+export function TabAppRotes() {
     const { sizes, colors } = useTheme();
 
     const iconSize = sizes[8];
