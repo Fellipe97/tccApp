@@ -34,8 +34,12 @@ export function Header({title, buttonBack=true}: Props) {
                         bg="transparent" 
                         p={0} 
                         position="absolute"
-                        left={5}
+                        left={8}
                         zIndex={2}
+                        _pressed={{
+                            bg:"transparent",
+                            opacity: .3
+                        }}
                     >
                         <IconeVoltar />
                     </Button>
