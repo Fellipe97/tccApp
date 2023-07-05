@@ -13,7 +13,7 @@ export function Button({ title, isLoading = false, ...rest }: Props) {
             h={14}
             bg="purple.600"
             borderWidth={0}
-            rounded='sm'
+            rounded='md'
             _pressed={{
                 bg: "purple.500"
             }}
