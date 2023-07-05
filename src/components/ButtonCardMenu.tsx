@@ -29,8 +29,8 @@ export function ButtonCardMenu({ title, icone, color, ...rest }: Props) {
 
     return (
         <ButtonNativeBase
-            h={100}
-            w={150}
+            h={110}
+            w={160}
             rounded='lg'
             bg={buttonColor}
             _pressed={{
