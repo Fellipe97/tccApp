@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRef } from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import { VStack, HStack, Text, Center, Actionsheet, useDisclose, KeyboardAvoidingView, useToast } from 'native-base'
 
@@ -51,7 +51,7 @@ export function SignIn() {
     } = useForm<FormDataPropsSignIn>({
         resolver: yupResolver(signInSchema)
     });
-    
+
     function handleSignIn({ email, password }: FormDataPropsSignIn) {
         toast.closeAll();
         console.log('Verificando...')
@@ -84,118 +84,121 @@ export function SignIn() {
     }
 
 
-      
+
     return (
-        <VStack mt={10} flex={1} px={12} pb={16} alignItems='center' justifyContent='center'>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <VStack mt={10} flex={1} px={12} pb={16} alignItems='center' justifyContent='center'>
+                    <LogoSvg />
 
-            <LogoSvg />
+                    <VStack w={'100%'} mt={12}>
+                        <Center>
 
-            <VStack w={'100%'} mt={12}>
-                <Center>
-
-                    <Controller
-                        control={signInControl}
-                        name='email'
-                        render={({ field: { onChange, value } }) => (
-                            <Input
-                                placeholder='E-mail'
-                                keyboardType='email-address'
-                                autoCapitalize='none'
-                                onChangeText={onChange}
-                                value={value}
-                                errorMessage={signInErrors.email?.message}
-                                returnKeyType='next'
-                                onSubmitEditing={() => passwordRef.current?.focus()}
-                            />
-                        )}
-                    />
-
-                    <Controller
-                        control={signInControl}
-                        name='password'
-                        render={({ field: { onChange, value } }) => (
-                            <Input
-                                ref={passwordRef}
-                                placeholder='Senha'
-                                secureTextEntry
-                                autoCapitalize='none'
-                                onChangeText={onChange}
-                                value={value}
-                                errorMessage={signInErrors.password?.message}
-                                returnKeyType='send'
-                                onSubmitEditing={handleSignInSubmit(handleSignIn)}
-                            />
-                        )}
-                    />
-
-                    <ButtonGhost
-                        title='Esqueceu a senha?'
-                        onPress={onOpen}
-                    />
-
-                    <Button
-                        title='Entrar'
-                        mt={10}
-                        onPress={handleSignInSubmit(handleSignIn)}
-                        isLoading={isLoadingSigIn}
-                    />
-
-
-                    <HStack w={'100%'} mt={6} alignItems='center' justifyContent='center'>
-
-                        <Text color='gray.500' fontSize='sm' fontFamily='body'>Não tem conta?</Text>
-
-                        <ButtonGhost
-                            title='Saiba mais'
-                            ml={2}
-                            onPress={handleNewAccount}
-                        />
-                    </HStack>
-                </Center>
-            </VStack>
-
-
-            {/* Pop up esqueci minha senha */}
-            <Actionsheet isOpen={isOpen} onClose={onClose}>
-                <KeyboardAvoidingView
-                    behavior="padding"
-                    w={'100%'}
-                >
-                    <Actionsheet.Content>
-                        <VStack px={9} mt={5} mb={5} w={'100%'} alignItems='center'>
-                            <Text color='purple.600' fontFamily='heading' fontSize='xl'>
-                                Recuperar Senha
-                            </Text>
                             <Controller
-                                control={forgetPasswordControl}
+                                control={signInControl}
                                 name='email'
                                 render={({ field: { onChange, value } }) => (
                                     <Input
-                                        mt={3}
                                         placeholder='E-mail'
                                         keyboardType='email-address'
                                         autoCapitalize='none'
                                         onChangeText={onChange}
                                         value={value}
-                                        errorMessage={forgetPasswordErrors.email?.message}
-                                        returnKeyType='send'
-                                        onSubmitEditing={handleForgetPasswordSubmit(handleForgotPassword)}
+                                        errorMessage={signInErrors.email?.message}
+                                        returnKeyType='next'
+                                        onSubmitEditing={() => passwordRef.current?.focus()}
                                     />
                                 )}
                             />
-                            <Button
-                                title='Enviar'
-                                mt={3}
-                                mb={5}
-                                onPress={handleForgetPasswordSubmit(handleForgotPassword)}
-                                isLoading={isLoadingRedefinePassword}
+
+                            <Controller
+                                control={signInControl}
+                                name='password'
+                                render={({ field: { onChange, value } }) => (
+                                    <Input
+                                        ref={passwordRef}
+                                        placeholder='Senha'
+                                        secureTextEntry
+                                        autoCapitalize='none'
+                                        onChangeText={onChange}
+                                        value={value}
+                                        errorMessage={signInErrors.password?.message}
+                                        returnKeyType='send'
+                                        onSubmitEditing={handleSignInSubmit(handleSignIn)}
+                                    />
+                                )}
                             />
-                        </VStack>
-                    </Actionsheet.Content>
-                </KeyboardAvoidingView>
-            </Actionsheet>
+
+                            <ButtonGhost
+                                title='Esqueceu a senha?'
+                                onPress={onOpen}
+                            />
+
+                            <Button
+                                title='Entrar'
+                                mt={10}
+                                onPress={handleSignInSubmit(handleSignIn)}
+                                isLoading={isLoadingSigIn}
+                            />
 
 
-        </VStack>
+                            <HStack w={'100%'} mt={6} alignItems='center' justifyContent='center'>
+
+                                <Text color='gray.500' fontSize='sm' fontFamily='body'>Não tem conta?</Text>
+
+                                <ButtonGhost
+                                    title='Saiba mais'
+                                    ml={2}
+                                    onPress={handleNewAccount}
+                                />
+                            </HStack>
+                        </Center>
+                    </VStack>
+
+
+                    {/* Pop up esqueci minha senha */}
+                    <Actionsheet isOpen={isOpen} onClose={onClose}>
+                        <KeyboardAvoidingView
+                            behavior="padding"
+                            w={'100%'}
+                        >
+                            <Actionsheet.Content>
+                                <VStack px={9} mt={5} mb={5} w={'100%'} alignItems='center'>
+                                    <Text color='purple.600' fontFamily='heading' fontSize='xl'>
+                                        Recuperar Senha
+                                    </Text>
+                                    <Controller
+                                        control={forgetPasswordControl}
+                                        name='email'
+                                        render={({ field: { onChange, value } }) => (
+                                            <Input
+                                                mt={3}
+                                                placeholder='E-mail'
+                                                keyboardType='email-address'
+                                                autoCapitalize='none'
+                                                onChangeText={onChange}
+                                                value={value}
+                                                errorMessage={forgetPasswordErrors.email?.message}
+                                                returnKeyType='send'
+                                                onSubmitEditing={handleForgetPasswordSubmit(handleForgotPassword)}
+                                            />
+                                        )}
+                                    />
+                                    <Button
+                                        title='Enviar'
+                                        mt={3}
+                                        mb={5}
+                                        onPress={handleForgetPasswordSubmit(handleForgotPassword)}
+                                        isLoading={isLoadingRedefinePassword}
+                                    />
+                                </VStack>
+                            </Actionsheet.Content>
+                        </KeyboardAvoidingView>
+                    </Actionsheet>
+
+
+                </VStack>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
