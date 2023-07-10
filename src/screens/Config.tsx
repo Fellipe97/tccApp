@@ -31,7 +31,7 @@ export function Config() {
                 <ButtonConfig 
                     title="Redefinir senha"
                     subTitle="Mudar a senha atual" 
-                    onPress={()=>console.log("Mudar a senha atual")}
+                    onPress={() => navigation.navigate('redefinePassword')}
                 />
 
                 <ButtonConfig 
