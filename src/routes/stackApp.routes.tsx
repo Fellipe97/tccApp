@@ -4,12 +4,14 @@ import { TabAppRotes } from "./tabApp.routes";
 import { TermOfUse } from "@screens/TermOfUse";
 import { PrivacyPolicy } from "@screens/PrivacyPolicy";
 import { RedefinePassword } from "@screens/RedefinePassword";
+import { Announcement } from "@screens/Announcement";
 
 type StackAppRoutes = {
     tabHome: undefined;
     termOfUse: undefined;
     privacyPolicy: undefined;
     redefinePassword: undefined;
+    announcement: undefined;
 }
 
 export type StackAuthNavigatorRoutesProps = NativeStackNavigationProp<StackAppRoutes>;
@@ -38,6 +40,10 @@ export function StackAppRoutes() {
             <Screen
                 name="redefinePassword"
                 component={RedefinePassword}
+            />
+            <Screen
+                name="announcement"
+                component={Announcement}
             />
         </Navigator>
     )
