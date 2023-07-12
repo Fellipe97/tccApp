@@ -11,10 +11,12 @@ import {
     Actionsheet,
     useDisclose,
     KeyboardAvoidingView,
-    useToast
+    useToast,
+    FlatList
 } from "native-base";
 
 
+import { StackAuthNavigatorRoutesProps } from '@routes/stackApp.routes'
 import { useNavigation } from '@react-navigation/native'
 
 import { Button } from "@components/Button";
@@ -31,7 +33,7 @@ import { ButtonGhost } from '@components/ButtonGhost';
 
 import { StyleSheet } from 'react-native';
 import LogoSvg from '@assets/logo.svg'
-
+import { ScrollViewChildren } from '@components/ScrollViewChildren';
 
 
 type propsChildren = {
@@ -44,7 +46,7 @@ type propsChildren = {
 }
 
 export function Home() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackAuthNavigatorRoutesProps>();
     const { user } = useAuth()
     const school = 'Colégio X'
 
@@ -103,68 +105,46 @@ export function Home() {
                         mb={5}
                     >Carteirinhas</Text>
 
-                    <ScrollView
-                        h={110}
-                        //bg={'pink.100'}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        {
-                            children.map((item, index) => (
-                                <Pressable
-                                    width={190}
-                                    height={100}
-                                    bg={'white'}
-                                    rounded={10}
-                                    shadow={7}
-                                    ml={2}
-                                    mr={2}
-                                    key={index}
-                                    _pressed={{
-                                        opacity: .7
-                                    }}
-                                    onPress={() => {
-                                        console.log('\nCliquei no aluno: ', { item })
-                                        setChildrenSelected(item)
-                                        onOpen()
-                                    }}
-                                >
-                                    <HStack h={'full'}>
+                    <FlatList
+                        data={children}
+                        keyExtractor={item => item.name}
+                        renderItem={({ item }) => (
+                            <ScrollViewChildren
+                                item={item}
+                                onPress={() => {
+                                    console.log('\nCliquei no aluno: ', { item })
+                                    onOpen()
+                                    setChildrenSelected(item)
+                                }}
+                            />
+                        )}
+                        horizontal
+                        showsHorizontalScrollIndicator = {false}
+                        maxH={110}
+                        minH={110}
+                        //_contentContainerStyle={{ px: 8 }}
+                    />
 
-                                        <VStack w={'60%'} p={3} justifyContent={'center'}>
-                                            <Text
-                                                fontFamily={'heading'}
-                                                fontSize={'md'}
-                                            >{item.name.split(" ")[0] + '\n' + item.name.split(" ")[1]}</Text>
-                                            <Text
-                                                fontFamily={'body'}
-                                                color={'gray.500'}
-                                            >{item.registration}</Text>
+                    {/* <FlatList
+                        data={groups}
+                        keyExtractor={item => item}
+                        renderItem={({ item }) => (
+                            <Group
+                                name={item}
+                                isActive={groupSelected.toUpperCase() === item.toUpperCase()}
+                                onPress={() => setGroupSelected(item)}
+                            />
+                        )}
+                        horizontal
+                        showsHorizontalScrollIndicator
+                        _contentContainerStyle={{ px: 8 }}
+                        my={10}
+                        maxH={10}
+                        minH={10}
+                    /> */}
 
-                                        </VStack>
-
-                                        <VStack w={'40%'} /* bg={'green.100'} w={'30%'} */
-                                            justifyContent={'center'}
-                                            alignItems={'center'}
-                                        >
-
-                                            <Avatar bg="gray.500" size={'lg'} shadow={7} source={{
-                                                uri: item.photograph
-                                            }}>
-                                                ...
-                                            </Avatar>
-
-                                        </VStack>
-
-                                    </HStack>
-                                </Pressable>
-                            ))
-                        }
-
-
-
-                    </ScrollView>
                 </VStack>
+
 
                 <VStack mt={7}>
                     <Text
@@ -177,7 +157,7 @@ export function Home() {
                         <ButtonCardMenu
                             title='Frequência'
                             color={'blueButton'}
-                            icone={<IconeFrequencia/>}
+                            icone={<IconeFrequencia />}
                             onPress={() => console.log('cliquei Frequência')}
                         />
                         <ButtonCardMenu
@@ -192,7 +172,7 @@ export function Home() {
                             title='Comunicados'
                             color={'orangeButton'}
                             icone={<IconeComunicados />}
-                            onPress={() => console.log('cliquei Comunicados')}
+                            onPress={() => navigation.navigate('announcement')}
                         />
                         <ButtonCardMenu
                             title='Financeiro'
@@ -226,14 +206,14 @@ export function Home() {
                                 </Text>
                             </HStack>
 
-                            <VStack 
-                                w={'100%'} 
-                                flex={1} 
-                                alignItems={'center'} 
-                                bg={'purple.100'} 
-                                shadow={5} 
-                                mb={5} 
-                                rounded={'lg'} 
+                            <VStack
+                                w={'100%'}
+                                flex={1}
+                                alignItems={'center'}
+                                bg={'purple.100'}
+                                shadow={5}
+                                mb={5}
+                                rounded={'lg'}
                                 px={3}
                                 justifyContent={'center'}
                             >
