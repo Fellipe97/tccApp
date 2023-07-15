@@ -104,15 +104,11 @@ export function Announcement() {
         }
       }, [children, childrenSelected]);
 
-    useEffect(() => {
-        console.log(announcementsFiltered)
-    }, [announcementsFiltered])
 
     useEffect(() => {
         setAnnouncementsFiltered(
             announcements.filter(announcement => announcement.idChildren === childrenSelected?.id)
         )
-        console.log('Filtrado: ', announcements.filter(announcement => announcement.idChildren === childrenSelected?.id))
     }, [childrenSelected])
 
     const renderItem = (item: any) => (
@@ -121,7 +117,7 @@ export function Announcement() {
                 <WarmingSvg />
                 <Text ml={4} numberOfLines={4} fontFamily={'heading'} fontSize={'md'}>{item.message}</Text>
             </HStack>
-            <VStack bg="gray.200" h={0.4} w="100%" shadow={4} />
+            <VStack bg="gray.200" h={0.4} w="100%" />
         </Box>
     );
 
@@ -157,7 +153,6 @@ export function Announcement() {
                             isActive={childrenSelected?.name == item.name}
 
                             onPress={() => {
-                                console.log('\nCliquei no aluno: ', { item })
                                 setChildrenSelected(item)
                             }}
                         />
