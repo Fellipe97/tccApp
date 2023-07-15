@@ -20,7 +20,7 @@ type Props = {
 export function ScrollViewChildren({ isActive = false, item, onPress}: Props) {
     return (
         <Pressable
-            width={190}
+            width={isActive ? 193 : 190}
             height={100}
             bg={'white'}
             rounded={10}
