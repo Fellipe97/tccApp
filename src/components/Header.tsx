@@ -2,6 +2,8 @@ import { Center, HStack, Text, VStack, Button } from "native-base";
 
 import { useNavigation } from '@react-navigation/native'
 import IconeVoltar from "@assets/iconeVoltar.svg"
+import { MaterialIcons } from '@expo/vector-icons';
+
 
 
 /* import { Button } from "@components/Button";
@@ -41,7 +43,8 @@ export function Header({title, buttonBack=true}: Props) {
                             opacity: .3
                         }}
                     >
-                        <IconeVoltar />
+                        {/* <IconeVoltar /> */}
+                        <MaterialIcons name="arrow-back-ios" size={20} color="#8257E6" />
                     </Button>
                 }
 
