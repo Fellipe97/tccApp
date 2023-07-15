@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, VStack } from "native-base";
+import { FlatList, HStack, ScrollView, Text, VStack } from "native-base";
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Header } from "@components/Header";
@@ -38,85 +38,151 @@ interface MarkedDates {
     };
 }
 
+interface PropsDatas {
+    idAluno: string;
+    name: string;
+    data: string;
+    message: string;
+    time: string;
+}
+
+
 export function Calendar() {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const [initialDate, setInitialDate] = useState('');
     const [key, setKey] = useState('');
+
+    const [markedDatesAux, setMarkedDatesAux] = useState<MarkedDates>({});
     const [markedDates, setMarkedDates] = useState<MarkedDates>({});
     const [selectedDate, setSelectedDate] = useState('');
 
+    const [datasFiltradas, setDatasFiltradas] = useState<PropsDatas[]>();
 
-    const datasMarcadas = [
+    const datasMarcadas: PropsDatas[] = [
         {
             idAluno: 'aaaabbbb111',
             name: 'Luiz Fellipe',
             data: '22/07/2023',
-            info: 'Prova de matematica'
+            message: 'Prova de matematica',
+            time: '07:58'
+        },
+        {
+            idAluno: 'aaaabbbb111',
+            name: 'Luiz Fellipe',
+            data: '15/07/2023',
+            message: 'Prova de matematica',
+            time: '07:58'
         },
         {
             idAluno: 'aaaabbbb111',
             name: 'Luiz Fellipe',
             data: '30/07/2023',
-            info: 'Prova de portugues'
+            message: 'Prova de portugues',
+            time: '09:50'
         },
         {
             idAluno: 'bbbbccc222',
             name: 'Maria Laura',
             data: '02/08/2023',
-            info: 'Feira de ciência'
+            message: 'Feira de ciência',
+            time: '10:30'
         }
     ];
 
+    //quando clicar no dia que precisa mostrar as informaçoes do dia
     function handleDayPress(date: DateData) {
         if (date.dateString) {
-            console.log(date)
+            //console.log(date)
             setSelectedDate(date.dateString);
         }
     }
 
+    const renderItem = ({ item }: any) => (
+        <HStack
+            h={75}
+            w={'100%'}
+            bg={'purple.500'}
+            borderRadius={'2xl'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+            px={5}
+            mt={2}
+        >
+            <Text width={'60%'} numberOfLines={4} fontFamily={"heading"} fontSize={'md'} color={'gray.100'}>{item.message}</Text>
+            <Text fontFamily={"heading"} fontSize={'md'} color={'gray.100'}>{item.time}</Text>
+        </HStack>
+    )
+
+
+    useEffect(() => {
+        if (selectedDate) {
+            setDatasFiltradas(datasMarcadas.filter((item) => {
+                const itemData = item.data.split('/').reverse().join('-');
+                return itemData === selectedDate;
+            })
+            )
+        }
+    }, [selectedDate])
+
+
     useEffect(() => {
         if (isFocused) {
-            var dataAtual = new Date();
-            dataAtual.setHours(dataAtual.getHours() - 3);
-            var dia = dataAtual.getDate();
-            var mes = dataAtual.getMonth() + 1;
-            var ano = dataAtual.getFullYear();
-            var dataFormatada = ano + '-' + mes + '-' + dia;
+            //forcar no mes vigente
+            const dataAtual = new Date();
+            const dia = dataAtual.getDate();
+            const mes = dataAtual.getMonth() + 1;
+            const ano = dataAtual.getFullYear();
+            const dataFormatada = `${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}`;
+
             setInitialDate(dataFormatada);
-            var novaKey = Math.random().toString();
+            const novaKey = Math.random().toString();
             setKey(novaKey);
+
+            //carregar as datas do banco de dados e adicionar no calendario
+            const updatedMarkedDates = datasMarcadas.reduce((prevMarkedDates: MarkedDates, data) => {
+                const { data: dataMarcada } = data;
+                const [dia, mes, ano] = dataMarcada.split('/');
+                const dataFormatada2 = `${ano}-${mes}-${dia}`;
+                prevMarkedDates[dataFormatada2] = {
+                    marked: true,
+                    dotColor: "#8257E6",
+                };
+
+                return prevMarkedDates;
+            }, {});
+
+            setMarkedDatesAux(updatedMarkedDates);
+            setSelectedDate(dataFormatada);
+            setMarkedDates(updatedMarkedDates);
         }
     }, [isFocused]);
 
+
+    //pegar a data selecionada e mostrar no calendario
     useEffect(() => {
-        
-        const updatedMarkedDates = datasMarcadas.reduce((prevMarkedDates: MarkedDates, data) => {
-            const { data: dataMarcada } = data;
-            const [dia, mes, ano] = dataMarcada.split('/');
-            const dataFormatada = `${ano}-${mes}-${dia}`;
-            prevMarkedDates[dataFormatada] = {
-                marked: true,
-                dotColor: "#8257E6",
-            };
+        const updatedMarkedDates = { ...markedDatesAux };
 
-            return prevMarkedDates;
-        }, {})
-
-        updatedMarkedDates[selectedDate] = {
-            ...updatedMarkedDates[selectedDate],
-            selected: true,
-            selectedColor: "#8257E6",
-        };
+        if (selectedDate) {
+            if (updatedMarkedDates[selectedDate]) {
+                updatedMarkedDates[selectedDate] = {
+                    ...updatedMarkedDates[selectedDate],
+                    selected: true,
+                    selectedColor: "#8257E6",
+                };
+            } else {
+                updatedMarkedDates[selectedDate] = {
+                    marked: false,
+                    selected: true,
+                    selectedColor: "#8257E6",
+                };
+            }
+        }
 
         setMarkedDates(updatedMarkedDates);
+    }, [selectedDate, markedDatesAux]);
 
-    }, [selectedDate]);
 
-
-    function handleGoBack() {
-        navigation.goBack();
-    }
 
     return (
         <VStack flex={1}>
@@ -124,33 +190,61 @@ export function Calendar() {
                 title="Calendário"
                 buttonBack={false}
             />
-            <VStack flex={1}>
+            <VStack flex={1} >
                 {isFocused && (
-                    <CalendarComponent
-                        key={key}
-                        animationType="fade"
-                        style={{
-                            margin: 20,
-                            marginTop: 20
-                        }}
-                        theme={{
-                            backgroundColor: '#F1F3F5',
-                            calendarBackground: '#F1F3F5',
-                            textSectionTitleColor: '#8257E6', // dias da semana
-                            todayTextColor: '#8257E6', // o dia atual
-                            monthTextColor: '#000000', // o mês atual
-                        }}
-                        renderArrow={direction =>
-                            direction == 'left' ?
-                                <MaterialIcons name="arrow-back-ios" size={20} color="#8257E6" />
-                                :
-                                <MaterialIcons name="arrow-forward-ios" size={20} color="#8257E6" />
-                        }
-                        initialDate={initialDate}
-                        onDayPress={handleDayPress}
+                    <>
+                        <CalendarComponent
+                            key={key}
+                            animationType="fade"
+                            style={{
+                                marginTop: 10
+                            }}
+                            theme={{
+                                backgroundColor: '#F1F3F5',
+                                calendarBackground: '#F1F3F5',
+                                textSectionTitleColor: '#8257E6', // dias da semana
+                                todayTextColor: '#8257E6', // o dia atual
+                                monthTextColor: '#000000', // o mês atual
+                            }}
+                            renderArrow={direction =>
+                                direction == 'left' ?
+                                    <MaterialIcons name="arrow-back-ios" size={20} color="#8257E6" />
+                                    :
+                                    <MaterialIcons name="arrow-forward-ios" size={20} color="#8257E6" />
+                            }
+                            initialDate={initialDate}
+                            onDayPress={handleDayPress}
 
-                        markedDates={markedDates}
-                    />
+                            markedDates={markedDates}
+                            px={4}
+                        />
+
+                        {datasFiltradas?.length === 0 ? (
+                            <VStack px={4} flex={1} mt={6}>
+                                <HStack
+                                    h={75}
+                                    w={'100%'}
+                                    bg={'gray.500'}
+                                    borderRadius={'2xl'}
+                                    alignItems={'center'}
+                                    justifyContent={'space-between'}
+                                    px={5}
+                                >
+                                    <Text numberOfLines={4} fontFamily={"heading"} fontSize={'md'} color={'gray.100'}>
+                                        Nenhum evento agendado
+                                    </Text>
+                                </HStack>
+                            </VStack>
+                        )
+                            : (
+                                <FlatList
+                                    px={4} py={2} mt={2} flex={1} borderRadius={'xl'} mb={2}
+                                    data={datasFiltradas}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={renderItem}
+                                />
+                            )}
+                    </>
                 )}
             </VStack>
         </VStack>
