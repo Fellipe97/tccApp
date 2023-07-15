@@ -66,7 +66,7 @@ export function Notifications() {
                     </Text>
                 </HStack>
             </TouchableOpacity>
-            <VStack bg="gray.200" h={0.4} w="100%" shadow={4} />
+            <VStack bg="gray.200" h={0.4} w="100%" />
         </Box>
     );
 
@@ -79,46 +79,6 @@ export function Notifications() {
             />
 
             <VStack flex={1} w={'100%'} >
-
-                {/* <ScrollView>
-                    {notificacoes.map((item, index) => (
-
-                        <Box key={index}>
-                            <TouchableOpacity onPress={() => console.log({ item })}>
-                                <HStack
-                                    w={'100%'}
-                                    px={5}
-                                    alignItems={'center'}
-                                    //mb={4}
-                                    py={5}
-                                >
-                                    <Avatar bg="gray.500" size={'lg'} shadow={7} m={2} source={{ uri: item.foto }}>
-                                        ...
-                                    </Avatar>
-
-                                    <Text
-                                        numberOfLines={4}
-                                        fontFamily={'heading'}
-                                        style={{ flex: 1 }}
-                                    >
-                                        {item.texto}
-                                    </Text>
-                                </HStack>
-                            </TouchableOpacity>
-                            {index !== notificacoes.length - 1 && (
-                                <VStack
-                                    bg="gray.200"
-                                    h={.4}
-                                    w={'100%'}
-                                    shadow={4}
-                                />
-                            )}
-                        </Box>
-
-
-
-                    ))}
-                </ScrollView> */}
 
                 <FlatList
                     data={notificacoes}
