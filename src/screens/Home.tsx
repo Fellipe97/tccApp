@@ -164,7 +164,7 @@ export function Home() {
                             title='Notas'
                             color={'redButton'}
                             icone={<IconeNotas />}
-                            onPress={() => console.log('cliquei Notas')}
+                            onPress={() => navigation.navigate('grades')}
                         />
                     </HStack>
                     <HStack justifyContent={'space-between'}>
