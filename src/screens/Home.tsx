@@ -96,7 +96,7 @@ export function Home() {
                 nameSchool={school}
             />
 
-            <VStack mt={10} flex={1} px={7} pb={16}>
+            <VStack mt={7} flex={1} px={7} pb={16}>
 
                 <VStack>
                     <Text

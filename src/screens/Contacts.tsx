@@ -21,7 +21,7 @@ export function Contacts() {
                 buttonBack={false}
             />
             <ScrollView showsVerticalScrollIndicator={false}>
-                <VStack mt={6} flex={1} px={8} pb={7}>
+                <VStack mt={7} flex={1} px={8} pb={7}>
                     <VStack flex={1}>
                         <HStack /* bg={'red.100'} */ justifyContent={'space-between'}>
                             <VStack /* bg={'green.100'} */ alignItems={'center'}>

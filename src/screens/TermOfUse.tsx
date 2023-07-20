@@ -12,7 +12,7 @@ export function TermOfUse() {
                 buttonBack={true}
             />
             <VStack px={2}>
-                <VStack mt={10} pb={8} >
+                <VStack mt={7} pb={8} >
                     <ScrollView px={5}>
                         <Text
                             textAlign={'justify'}

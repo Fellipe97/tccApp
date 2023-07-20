@@ -26,7 +26,7 @@ export function Config() {
                 title="Configurações"
                 buttonBack={false}
             />
-            <VStack mt={10} flex={1} pb={16} >
+            <VStack mt={7} flex={1} pb={16} >
 
                 <ButtonConfig 
                     title="Redefinir senha"

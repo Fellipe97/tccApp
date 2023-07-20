@@ -134,7 +134,7 @@ export function Grades() {
                 title="Notas"
                 buttonBack
             />
-            <VStack mt={10} flex={1} px={8}>
+            <VStack mt={7} flex={1} px={8}>
 
                 <Text
                     fontFamily={'heading'}

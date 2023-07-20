@@ -64,7 +64,7 @@ export function RedefinePassword() {
                     title="Redefinir senha"
                     buttonBack={true}
                 />
-                <VStack px={7} mt={10}>
+                <VStack px={7} mt={7}>
 
                     <Controller
                         control={redefinePasswordControl}
