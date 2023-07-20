@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlatList, Text, VStack, Pressable, HStack, ScrollView } from "native-base";
+import { FlatList, Text, VStack, Pressable, HStack, ScrollView, Center, Box } from "native-base";
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -8,6 +8,8 @@ import { ScrollViewChildren } from "@components/ScrollViewChildren";
 import { Bimester } from "@components/Bimester";
 
 import { MaterialIcons } from '@expo/vector-icons';
+
+import { VictoryPie } from 'victory-native'
 
 
 type propsChildren = {
@@ -29,9 +31,15 @@ type propsPresences = {
     presence: number;
 }
 
+type propsChartPie = {
+    absences: number;
+    presence: number;
+    total_classes: number;
+}
+
 export function Frequency() {
     const navigation = useNavigation();
-
+    const [dataPie, setDataPie] = useState<propsChartPie | null>(null);
 
     const children: propsChildren[] = [
         {
@@ -81,7 +89,7 @@ export function Frequency() {
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
-            presence: 15
+            presence: 16
         },
         {
             idChildren: 'aaaaaaa111111',
@@ -89,7 +97,7 @@ export function Frequency() {
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
-            presence: 15
+            presence: 20
         },
         {
             idChildren: 'aaaaaaa111111',
@@ -97,7 +105,7 @@ export function Frequency() {
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
-            presence: 15
+            presence: 25
         },
         {
             idChildren: 'aaaaaaa111111',
@@ -187,7 +195,27 @@ export function Frequency() {
         setPresencesFiltered(
             presences.filter(grade => grade.idChildren === childrenSelected?.id)
         )
-        console.log('Filtrado: ', presences.filter(grade => grade.idChildren === childrenSelected?.id))
+
+        let presencesFilteredAux = presences.filter(grade => grade.idChildren === childrenSelected?.id)
+        let totalClasses = 0;
+        let totalPresence = 0;
+        presencesFilteredAux.forEach((item) => {
+            totalClasses += item.total_classes;
+            totalPresence += item.presence;
+        });
+        let absences = totalClasses - totalPresence;
+        setDataPie({
+            absences: absences,
+            presence: totalPresence,
+            total_classes: totalClasses
+        })
+
+        /* console.log('presencesFilteredAux',{
+            absences: absences,
+            presence: totalPresence,
+            total_classes: totalClasses
+        }) */
+        //console.log('Filtrado: ', presences.filter(grade => grade.idChildren === childrenSelected?.id))
     }, [childrenSelected])
 
 
@@ -197,7 +225,7 @@ export function Frequency() {
                 title="Frequência"
                 buttonBack
             />
-            <VStack mt={10} flex={1} px={8}>
+            <VStack mt={7} flex={1} px={8}>
 
                 <Text
                     fontFamily={'heading'}
@@ -226,18 +254,17 @@ export function Frequency() {
                 />
 
                 <VStack
-                    flex={1}
                     bg={'gray.100'}
                     mt={4}
                     mb={2}
                     borderRadius={'xl'}
                     shadow={7}
                     py={3}
-                    minH={60}
+                    minH={285}
+                    maxH={285}
                 >
-                    <Text px={5} fontSize={'2xl'} fontFamily={'heading'} mb={4}>Disciplinas</Text>
+                    <Text px={5} fontSize={'2xl'} fontFamily={'heading'} mb={2}>Disciplinas</Text>
                     <ScrollView
-                        flex={1}
                         borderTopLeftRadius={'xl'}
                         borderTopRightRadius={'xl'}
                         px={5}
@@ -264,30 +291,68 @@ export function Frequency() {
                                                 fontFamily={'heading'}
                                                 color={'red.700'}
                                             >
-                                                Ausência {item.presence}
+                                                Ausência {item.total_classes - item.presence}
                                             </Text>
                                             <Text
                                                 fontSize="md"
                                                 fontFamily={'heading'}
-                                                color={'green.700'}
                                             >
-                                                Aulas {item.presence}
+                                                Aulas {item.total_classes}
                                             </Text>
                                         </HStack>
                                     </VStack>
-                                ))}
+                                )
+                            )
+                        }
                     </ScrollView>
 
                 </VStack>
-                <VStack 
-                    flex={1} 
-                    bg={'green.100'} 
-                    borderBottomLeftRadius={'xl'} 
-                    borderBottomRightRadius={'xl'}
-                    mb={4}
-                >
 
-                </VStack>
+                {dataPie && dataPie.total_classes !== 0 &&
+                    <VStack
+                        flex={1}
+                        //bg={'green.100'}
+                        borderBottomLeftRadius={'xl'}
+                        borderBottomRightRadius={'xl'}
+                        mb={5}
+                    >
+                        <HStack>
+
+                            <VStack maxW={'60%'}>
+                                <Center>
+                                    <VictoryPie
+                                        height={200}
+                                        innerRadius={80}
+                                        data={[
+                                            { x: " ", y: dataPie.absences },
+                                            { x: " ", y: dataPie.presence }
+                                        ]}
+                                        colorScale={["#F01A31", "#1B936C"]}
+                                    />
+                                </Center>
+                            </VStack>
+
+                            <VStack justifyContent={'center'} flex={1}>
+                                <Text
+                                    fontFamily={'heading'}
+                                    fontSize={'lg'}
+                                    color={'green.700'}
+                                >Presença - {dataPie.presence * 100 / dataPie.total_classes + '%'}</Text>
+                                <Text
+                                    fontFamily={'heading'}
+                                    fontSize={'lg'}
+                                    color={'red.700'}
+                                    mt={2}
+                                >Ausencia - {dataPie.absences * 100 / dataPie.total_classes + '%'}</Text>
+                            </VStack>
+
+                        </HStack>
+
+                    </VStack>
+                }
+
+
+
             </VStack>
         </VStack>
     );
