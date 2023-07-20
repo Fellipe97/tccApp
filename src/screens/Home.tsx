@@ -158,7 +158,7 @@ export function Home() {
                             title='Frequência'
                             color={'blueButton'}
                             icone={<IconeFrequencia />}
-                            onPress={() => console.log('cliquei Frequência')}
+                            onPress={() => navigation.navigate('frequency')}
                         />
                         <ButtonCardMenu
                             title='Notas'

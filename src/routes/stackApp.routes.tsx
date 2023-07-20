@@ -6,6 +6,7 @@ import { PrivacyPolicy } from "@screens/PrivacyPolicy";
 import { RedefinePassword } from "@screens/RedefinePassword";
 import { Announcement } from "@screens/Announcement";
 import { Grades } from "@screens/Grades";
+import { Frequency } from "@screens/Frequency";
 
 type StackAppRoutes = {
     tabHome: undefined;
@@ -14,6 +15,7 @@ type StackAppRoutes = {
     redefinePassword: undefined;
     announcement: undefined;
     grades: undefined;
+    frequency: undefined;
 }
 
 export type StackAuthNavigatorRoutesProps = NativeStackNavigationProp<StackAppRoutes>;
@@ -50,6 +52,10 @@ export function StackAppRoutes() {
             <Screen
                 name="grades"
                 component={Grades}
+            />
+            <Screen
+                name="frequency"
+                component={Frequency}
             />
         </Navigator>
     )
