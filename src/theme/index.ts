@@ -35,6 +35,10 @@ export const THEME = extendTheme(
             orange: {
                 600: '#FFAB7B',
                 500: '#FCC09E'
+            },
+            yellow: {
+                200: '#bfba24',
+                100: '#FFF59C'
             }
         },
         fonts: {
