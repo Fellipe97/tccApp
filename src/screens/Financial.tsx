@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
-
-
 import { FlatList, Text, VStack, Pressable, HStack, ScrollView, Actionsheet, KeyboardAvoidingView, useDisclose } from "native-base";
 
 import { useNavigation } from '@react-navigation/native'
 
 import { Header } from "@components/Header";
 import { ScrollViewChildren } from "@components/ScrollViewChildren";
-import { Bimester } from "@components/Bimester";
-
-import { MaterialIcons } from '@expo/vector-icons';
 import { Button } from "@components/Button";
 import { ButtonGhost } from "@components/ButtonGhost";
 
-
+import * as Clipboard from 'expo-clipboard';
 
 
 
@@ -127,12 +122,12 @@ export function Financial() {
     const { isOpen, onOpen, onClose } = useDisclose();
 
 
-    const copyToClipboard = () => {
+    const copyToClipboard = async() => {
         if (monthlyPaymentSelected) {
-            //Clipboard.setString('monthlyPaymentSelected.bar_code');
+            await Clipboard.setStringAsync(monthlyPaymentSelected.bar_code);
             console.log('texto copiado');
           } else {
-            console.log('monthlyPaymentSelected is null');
+            console.log('texto vazio');
           }
     }
 
@@ -277,19 +272,20 @@ export function Financial() {
                             </VStack>
 
 
-
-                            <Button
-                                title='Cópiar código de barra'
-                                mb={4}
-                                onPress={() => {
-                                    console.log('fazendo o download')
-                                    copyToClipboard()
-                                    onClose()
-                                }}
-                            />
+                            {monthlyPaymentSelected?.status === 'Boleto em aberto' &&
+                                <Button
+                                    title='Cópiar código de barra'
+                                    mb={4}
+                                    onPress={() => {
+                                        console.log('fazendo o download')
+                                        copyToClipboard()
+                                        onClose()
+                                    }}
+                                />
+                            }
 
                             <ButtonGhost
-                                title='Cancelar'
+                                title={monthlyPaymentSelected?.status === 'Boleto pago' ? 'voltar' : 'cancelar'}
                                 colorButton='cancel'
                                 onPress={onClose}
                             />
