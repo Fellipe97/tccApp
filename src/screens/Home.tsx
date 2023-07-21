@@ -178,7 +178,7 @@ export function Home() {
                             title='Financeiro'
                             color={'greenButton'}
                             icone={<IconeFinanceiro />}
-                            onPress={() => console.log('cliquei Financeiro')}
+                            onPress={() => navigation.navigate('financial')}
                         />
                     </HStack>
                 </VStack>
