@@ -50,7 +50,7 @@ export function Config() {
 
             </VStack>
             <Button
-                title='Sair'
+                title='Sair do aplicativo'
                 mb={5}
                 onPress={handleSignOut}
                 bg={'red.600'}
