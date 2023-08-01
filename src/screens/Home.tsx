@@ -14,6 +14,8 @@ import {
     useToast,
     FlatList
 } from "native-base";
+import { printToFileAsync } from 'expo-print'
+import { shareAsync } from 'expo-sharing'
 
 
 import { StackAuthNavigatorRoutesProps } from '@routes/stackApp.routes'
@@ -22,43 +24,41 @@ import { useNavigation } from '@react-navigation/native'
 import { Button } from "@components/Button";
 import { HeaderHome } from "@components/HeaderHome";
 import { ButtonCardMenu } from "@components/ButtonCardMenu";
+import { ButtonGhost } from '@components/ButtonGhost';
+import { ScrollViewChildren } from '@components/ScrollViewChildren';
+
 
 import IconeFrequencia from "@assets/iconeFrequencia.svg"
 import IconeNotas from "@assets/iconeNotas.svg"
 import IconeComunicados from "@assets/iconeComunicados.svg"
 import IconeFinanceiro from "@assets/iconeFinanceiro.svg"
+import LogoSvg from '@assets/logo.svg'
 
 import { useAuth } from '@hooks/auth';
-import { ButtonGhost } from '@components/ButtonGhost';
 
-import { StyleSheet } from 'react-native';
-import LogoSvg from '@assets/logo.svg'
-import { ScrollViewChildren } from '@components/ScrollViewChildren';
+import Api from '../helpers/Api';
+
+import { childrenProps } from '../types/children'
 
 
-type propsChildren = {
-    name: string;
-    birth: string;
-    registration: string;
-    bloodType: string;
-    grade: string;
-    photograph: string;
-}
+
 
 export function Home() {
+    const api = Api();
     const navigation = useNavigation<StackAuthNavigatorRoutesProps>();
     const { user } = useAuth()
     const school = 'Colégio X'
 
     const { isOpen, onOpen, onClose } = useDisclose();
-    const [childrenSelected, setChildrenSelected] = useState<propsChildren | null>(null)
+    const [children, setChildren] = useState<childrenProps[] | null>(null)
+    const [childrenSelected, setChildrenSelected] = useState<childrenProps | null>(null)
 
     const dataAtual = new Date();
     const anoAtual = dataAtual.getFullYear();
     const validadeCarteirinha = '31/12/' + anoAtual
 
 
-    const children: propsChildren[] = [
+    /* const children: propsChildren[] = [
         {
             name: 'Maria Laura da Silva Oliveira',
             birth: '02/09/2010',
@@ -83,10 +83,91 @@ export function Home() {
             grade: 'Ensino Fundamental II - 8º ano',
             photograph: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
         },
-    ]
+    ] */
+
+    const getGeneralInformationChildren = async (tokens: string[]) => {
+        let resp = await api.getGeneralInformationChildren(tokens)
+        if (resp) {
+            setChildren(resp)
+        }
+    }
+
+    const handleGeneratePDF = async () => {
+        if (!childrenSelected) return onClose()
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                /* Estilos globais */
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    margin-top: 40px;
+                }
+        
+                /* Estilo para a logo */
+                .logo {
+                    width: 150px;
+                    height: 150px;
+                    margin: 0 auto 30px;
+                }
+        
+                /* Estilo para o cabeçalho */
+                .header {
+                    font-size: 36px;
+                    margin-bottom: 20px;
+                }
+        
+                /* Estilo para as informações do aluno */
+                .info {
+                    font-size: 26px;
+                    margin-bottom: 5px;
+                }
+
+                .formContent {
+                    border-radius: 20px;
+                    padding: 15px;
+                    width: 80%;
+                    margin: 0 auto;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                img{
+                    border-radius: 100%;
+                }
+                </style>
+            </head>
+            <body>
+                    <div class="formContent">
+                        <img src=${childrenSelected?.photograph} alt="Logo da Escola" style="width: 250px; height: 250px; margin: 0 auto 30px;">
+                        <h1 class="header">Informações da Carteirinha</br></br>Colégio X</h1>
+                        <p class="info">Nome: ${childrenSelected?.name}</p>
+                        <p class="info">Data de Nascimento: ${childrenSelected?.birth}</p>
+                        <p class="info">Matrícula: ${childrenSelected?.registration}</p>
+                        <p class="info">Tipo sanguíneo: ${childrenSelected?.bloodType}</p>
+                        <p class="info">Série: ${childrenSelected?.grade} ano</p>
+                        <p class="info">Validade: ${validadeCarteirinha}</p>
+                    </div>
+            </body> 
+            </html>
+        `
+
+        const file = await printToFileAsync({
+            html,
+            base64: false
+        });
+
+        await shareAsync(file.uri);
+    }
 
     useEffect(() => {
-
+        if (user?.children) {
+            getGeneralInformationChildren(user?.children)
+        }
     }, [])
 
     return (
@@ -112,37 +193,17 @@ export function Home() {
                             <ScrollViewChildren
                                 item={item}
                                 onPress={() => {
-                                    console.log('\nCliquei no aluno: ', { item })
                                     onOpen()
                                     setChildrenSelected(item)
                                 }}
                             />
                         )}
                         horizontal
-                        showsHorizontalScrollIndicator = {false}
+                        showsHorizontalScrollIndicator={false}
                         maxH={110}
                         minH={110}
-                        //_contentContainerStyle={{ px: 8 }}
+                    //_contentContainerStyle={{ px: 8 }}
                     />
-
-                    {/* <FlatList
-                        data={groups}
-                        keyExtractor={item => item}
-                        renderItem={({ item }) => (
-                            <Group
-                                name={item}
-                                isActive={groupSelected.toUpperCase() === item.toUpperCase()}
-                                onPress={() => setGroupSelected(item)}
-                            />
-                        )}
-                        horizontal
-                        showsHorizontalScrollIndicator
-                        _contentContainerStyle={{ px: 8 }}
-                        my={10}
-                        maxH={10}
-                        minH={10}
-                    /> */}
-
                 </VStack>
 
 
@@ -253,11 +314,9 @@ export function Home() {
                                     </VStack>
                                 </HStack>
 
-
-
                                 <VStack w={'100%'} mt={2}>
                                     <Text fontFamily={'heading'}>Série</Text>
-                                    <Text fontFamily={'body'} fontSize={18}>{childrenSelected?.grade}</Text>
+                                    <Text fontFamily={'body'} fontSize={18}>{childrenSelected?.grade} ano</Text>
                                 </VStack>
 
                             </VStack>
@@ -266,7 +325,8 @@ export function Home() {
                                 mb={2}
                                 onPress={() => {
                                     console.log('fazendo o download')
-                                    onClose()
+                                    handleGeneratePDF()
+                                    //onClose()
                                 }}
                             />
                             <ButtonGhost
