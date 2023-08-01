@@ -1,19 +1,12 @@
 import { Spinner, Center, Image, VStack, Text, ScrollView, Pressable, HStack, Avatar } from 'native-base'
 
 import LogoSvg from '@assets/logo.svg'
+import { childrenProps } from '../types/children'
 
 
-type PropsChildren = {
-    name: string;
-    birth: string;
-    registration: string;
-    bloodType: string;
-    grade: string;
-    photograph: string;
-}
 type Props = {
     isActive ?: boolean;
-    item: PropsChildren;
+    item: childrenProps;
     onPress: () => void
 }
 
