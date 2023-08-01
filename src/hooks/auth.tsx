@@ -15,9 +15,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type User = {
     id: string;
+    email: string;
     name: string;
+    cpf: string;
+    rg: string;
+    birth: {
+        nanoseconds: number;
+        seconds: number;
+    }
+    children: string[];
 }
-
 
 type AuthContextData = {
     signIn: (email: string, password: string) => Promise<void>;
@@ -44,12 +51,59 @@ function AuthProvider({ children }: AuthProviderProps) {
     const [isLoadingStorage, setIsLoadingStorage] = useState(false)
     const [isLoadingRedefinePassword, setIsLoadingRedefinePassword] = useState(false)
 
+    async function loadUserSorageData() {
+        setIsLoadingStorage(true)
+        try {
+            const storedUser = await AsyncStorage.getItem(USER_COLLECTION)
+            if (storedUser) {
+                let resp = await validateUserUid(JSON.parse(storedUser).id)
+                console.log(resp)
+                if (!resp.error) {
+                    setUser(resp as User)
+                } else {
+                    console.log('Error: ', resp.error)
+                    setUser(null)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoadingStorage(false)
+        }
+    }
+
+    async function validateUserUid(userUid: string) {
+        try {
+            console.log('entrei')
+            //const userRef = doc(db, 'users', userUid);
+            const userRef = doc(db, "parents", userUid);
+            const userSnapshot = await getDoc(userRef);
+            if (userSnapshot.exists()) {
+                const userData = userSnapshot.data();
+                return {
+                    id: userSnapshot.id,
+                    ...userData
+                };
+            } else {
+                return {
+                    error: 'Não existe usuário.' //provavelmente o usuário foi excluído
+                };
+            }
+        } catch (error) {
+            console.error('Erro ao validar UID do usuário:', error);
+            return {
+                error: 'Errro ao se comunicar com o banco de dados.'
+            };
+        }
+    }
+
     async function signIn(email: string, password: string) {
         toast.closeAll();
         setIsLoadingSigIn(true)
         await signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
-                const userRef = doc(db, "users", userCredential.user.uid);
+                //const userRef = doc(db, "users", userCredential.user.uid);
+                const userRef = doc(db, "parents", userCredential.user.uid);
                 const userSnapshot = await getDoc(userRef);
 
                 if (userSnapshot.exists()) {
@@ -57,11 +111,10 @@ function AuthProvider({ children }: AuthProviderProps) {
 
                     const updatedUser = {
                         id: userCredential.user.uid,
-                        name: userData.name
+                        ...userData
                     };
-                    console.log(updatedUser)
                     await AsyncStorage.setItem(USER_COLLECTION, JSON.stringify(updatedUser))
-                    setUser(updatedUser)
+                    setUser(updatedUser as User)
 
                 } else {
                     return toast.show({
@@ -89,7 +142,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                 else if (error.code == 'auth/too-many-requests') {
                     errorMessage = 'Tivemos problemas no banco de dados, tente novamente mais tarde.'
                 }
-                else{
+                else {
                     error.message = 'Não foi possível realizar o login.'
                 }
                 console.log(error.code, error.message)
@@ -102,22 +155,6 @@ function AuthProvider({ children }: AuthProviderProps) {
             }).finally(
                 () => setIsLoadingSigIn(false)
             )
-    }
-
-    async function loadUserSorageData() {
-        setIsLoadingStorage(true)
-        try {
-            const storedUser = await AsyncStorage.getItem(USER_COLLECTION)
-            if (storedUser) {
-                console.log(storedUser)
-                const userData = JSON.parse(storedUser) as User;
-                setUser(userData)
-            }
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setIsLoadingStorage(false)
-        }
     }
 
     async function signOut() {
@@ -142,7 +179,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             .catch((error) => {
                 let errorTitle = 'Redefinir senha'
                 let errorMessage = ''
-                
+
                 if (error.code == 'auth/network-request-failed') {
                     errorMessage = 'Falha de conexão ao se conectar ao banco de dados.'
                 }
