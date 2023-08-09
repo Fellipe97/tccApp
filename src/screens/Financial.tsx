@@ -9,6 +9,11 @@ import { Button } from "@components/Button";
 import { ButtonGhost } from "@components/ButtonGhost";
 
 import * as Clipboard from 'expo-clipboard';
+import { childrenProps } from "src/types/children";
+
+import { useAuth } from "@hooks/auth";
+import Api from "../helpers/Api";
+import { monthlyPaymentProps } from "src/types/monthlyPayment";
 
 
 
@@ -37,9 +42,11 @@ type propsMonthlyPayment = {
 
 export function Financial() {
     const navigation = useNavigation();
+    const api = Api();
+    const { user } = useAuth()
 
 
-    const children: propsChildren[] = [
+    /* const children: propsChildren[] = [
         {
             id: 'aaaaaaa111111',
             name: 'Maria Laura da Silva Oliveira',
@@ -70,9 +77,9 @@ export function Financial() {
             id_grade: 'ensino_Fundamental_II',
             photograph: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
         },
-    ]
+    ] */
 
-    const monthlyPayment: propsMonthlyPayment[] = [
+    /* const monthlyPayment: propsMonthlyPayment[] = [
         {
             idChildren: 'aaaaaaa111111',
             installment: '2/12',
@@ -113,38 +120,66 @@ export function Financial() {
             bar_code: 'vfvdr8gv4df8vd8v4c8sd4cs8dc4sd8c4s8d8fdv1df8v1df8v1df8v1fd8v18',
             pay_day: '05/02/2023'
         }
-    ]
+    ] */
 
 
-    const [childrenSelected, setChildrenSelected] = useState<propsChildren | null>(null);
-    const [monthlyPaymentFiltered, setMonthlyPaymentFiltered] = useState<propsMonthlyPayment[] | null>(null);
-    const [monthlyPaymentSelected, setMonthlyPaymentSelected] = useState<propsMonthlyPayment | null>(null);
+    const [childrenSelected, setChildrenSelected] = useState<childrenProps | null>(null);
+    const [monthlyPaymentFiltered, setMonthlyPaymentFiltered] = useState<monthlyPaymentProps[] | null>(null);
+    //const [monthlyPaymentSelected, setMonthlyPaymentSelected] = useState<propsMonthlyPayment | null>(null);
+    const [monthlyPaymentSelected, setMonthlyPaymentSelected] = useState<monthlyPaymentProps | null>(null);
+    const [monthlyPayment, setMonthlyPayment] = useState<monthlyPaymentProps[] | null>(null);
     const { isOpen, onOpen, onClose } = useDisclose();
 
+    const [children, setChildren] = useState<childrenProps[] | null>(null)
 
-    const copyToClipboard = async() => {
+    const getGeneralInformationChildren = async (tokens: string[]) => {
+        let resp = await api.getGeneralInformationChildren(tokens)
+        if (resp) {
+            setChildren(resp)
+            let resp2 = await api.getMonthlyPaymentChildren(resp)
+            if (resp2) {
+                console.log('resp2: ', resp2)
+                setMonthlyPayment(resp2)
+                setMonthlyPaymentFiltered(resp2.filter(monthlyPayment => monthlyPayment.idChildren === resp[0].id))
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (user?.children) {
+            getGeneralInformationChildren(user?.children)
+        }
+    }, [])
+
+
+
+    const copyToClipboard = async () => {
         if (monthlyPaymentSelected) {
             await Clipboard.setStringAsync(monthlyPaymentSelected.bar_code);
             console.log('texto copiado');
-          } else {
+        } else {
             console.log('texto vazio');
-          }
+        }
     }
 
 
     useEffect(() => {
-        if (children.length > 0 && !childrenSelected) {
+        if (children && children.length > 0 && !childrenSelected) {
             setChildrenSelected(children[0]);
         }
     }, [children, childrenSelected]);
 
 
     useEffect(() => {
-        setMonthlyPaymentFiltered(
-            monthlyPayment.filter(monthlyPayment => monthlyPayment.idChildren === childrenSelected?.id)
-        )
-        console.log('Filtrado: ', monthlyPayment.filter(monthlyPayment => monthlyPayment.idChildren === childrenSelected?.id))
+        if (monthlyPayment && monthlyPayment?.length > 0) {
+            let aux = monthlyPayment.filter(monthlyPayment => monthlyPayment.idChildren === childrenSelected?.id)
+            setMonthlyPaymentFiltered(
+                monthlyPayment.filter(monthlyPayment => monthlyPayment.idChildren === childrenSelected?.id)
+            )
+            console.log('Filtrado: ', monthlyPayment.filter(monthlyPayment => monthlyPayment.idChildren === childrenSelected?.id))
+        }
     }, [childrenSelected])
+
 
 
     return (
@@ -210,7 +245,7 @@ export function Financial() {
                                 >
                                     <HStack justifyContent={'space-between'}>
                                         <Text fontFamily={'heading'}>{item.installment} - Mensalidade {item.month}</Text>
-                                        <Text>R$ {item.value}</Text>
+                                        <Text>R$ {item.value.toFixed(2).replace('.', ',')}</Text>
                                     </HStack>
 
                                     <HStack justifyContent={'space-between'} mt={7}>
@@ -259,7 +294,7 @@ export function Financial() {
                                 </HStack>
                                 <HStack mb={2}>
                                     <Text fontFamily={'heading'} fontSize={'lg'}>Valor: </Text>
-                                    <Text fontSize={'lg'}>{monthlyPaymentSelected?.value}</Text>
+                                    <Text fontSize={'lg'}>{monthlyPaymentSelected?.value.toFixed(2).replace('.', ',')}</Text> 
                                 </HStack>
                                 <HStack mb={7} w={'100%'}>
                                     <Text fontFamily={'heading'} fontSize={'xl'}>Status: </Text>

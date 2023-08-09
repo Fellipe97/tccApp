@@ -239,7 +239,7 @@ export function Frequency() {
                     renderItem={({ item }) => (
                         <ScrollViewChildren
                             item={item}
-
+                            
                             isActive={childrenSelected?.name == item.name}
 
                             onPress={() => {
@@ -260,8 +260,8 @@ export function Frequency() {
                     borderRadius={'xl'}
                     shadow={7}
                     py={3}
-                    minH={285}
-                    maxH={285}
+                    minH={3}
+                    maxH={'45.5%'}
                 >
                     <Text px={5} fontSize={'2xl'} fontFamily={'heading'} mb={2}>Disciplinas</Text>
                     <ScrollView
