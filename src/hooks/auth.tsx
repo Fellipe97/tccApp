@@ -57,7 +57,6 @@ function AuthProvider({ children }: AuthProviderProps) {
             const storedUser = await AsyncStorage.getItem(USER_COLLECTION)
             if (storedUser) {
                 let resp = await validateUserUid(JSON.parse(storedUser).id)
-                console.log(resp)
                 if (!resp.error) {
                     setUser(resp as User)
                 } else {
@@ -74,7 +73,6 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     async function validateUserUid(userUid: string) {
         try {
-            console.log('entrei')
             //const userRef = doc(db, 'users', userUid);
             const userRef = doc(db, "parents", userUid);
             const userSnapshot = await getDoc(userRef);
@@ -171,7 +169,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             .then(() => {
                 return toast.show({
                     title: 'Redefinir senha',
-                    description: 'E-mail enviado com scesso, verifica a caixa de entrada.',
+                    description: 'E-mail enviado com sucesso, verifica a caixa de entrada.',
                     placement: 'top',
                     bgColor: 'emerald.500'
                 })
@@ -223,7 +221,6 @@ function AuthProvider({ children }: AuthProviderProps) {
         </AuthContext.Provider>
     )
 }
-
 
 
 function useAuth() {

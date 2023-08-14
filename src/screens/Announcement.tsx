@@ -9,6 +9,11 @@ import { ScrollViewChildren } from "@components/ScrollViewChildren";
 
 import WarmingSvg from '@assets/warming.svg'
 
+import { useAuth } from "@hooks/auth";
+
+import Api from "../helpers/Api";
+import { childrenProps } from "src/types/children";
+
 
 
 type propsChildren = {
@@ -28,8 +33,12 @@ type propsAnnouncement = {
 
 export function Announcement() {
     const navigation = useNavigation();
+    const api = Api();
+    const { user } = useAuth()
 
-    const children: propsChildren[] = [
+
+
+    /* const children: propsChildren[] = [
         {
             id: 'aaaaaaa111111',
             name: 'Maria Laura da Silva Oliveira',
@@ -57,52 +66,66 @@ export function Announcement() {
             grade: 'Ensino Fundamental II - 8º ano',
             photograph: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
         },
-    ]
+    ] */
 
     const announcements: propsAnnouncement[] = [
         {
-            idChildren: 'aaaaaaa111111',
+            idChildren: 'TxquPuSseEdBXsZJcYen',
             icon: '',
             message: 'Seu filho(a) está sem lápis de cor.'
         },
         {
-            idChildren: 'aaaaaaa111111',
+            idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             icon: '',
             message: 'Seu filho(a) esqueceu o livro em casa.'
         },
         {
-            idChildren: 'aaaaaaa111111',
+            idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             icon: '',
             message: 'A turma irá fazer uma atividade que precisará trazer cola.'
         },
         {
-            idChildren: 'bbbbbbb2222222',
+            idChildren: 'TxquPuSseEdBXsZJcYen',
             icon: '',
             message: 'Seu filho(a) não fez a tarefa de casa.'
         },
         {
-            idChildren: 'bbbbbbb2222222',
+            idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             icon: '',
             message: 'Seu filho(a) derramou o suco do lance.'
         },
     ]
 
-
-
-    const [childrenSelected, setChildrenSelected] = useState<propsChildren | null>(null);
+    const [children, setChildren] = useState<childrenProps[] | null>(null)
+    const [childrenSelected, setChildrenSelected] = useState<childrenProps | null>(null);
     const [announcementsFiltered, setAnnouncementsFiltered] = useState<propsAnnouncement[] | null>(null);
 
 
-    function handleGoBack() {
-        navigation.goBack();
+    const getGeneralInformationChildren = async (tokens: string[]) => {
+        let resp = await api.getGeneralInformationChildren(tokens)
+        if (resp) {
+            setChildren(resp)
+            let resp2 = await api.getMonthlyPaymentChildren(resp)
+            if (resp2) {
+                console.log('resp2: ', resp2)
+                //setMonthlyPayment(resp2)
+                //setMonthlyPaymentFiltered(resp2.filter(monthlyPayment => monthlyPayment.idChildren === resp[0].id))
+            }
+        }
     }
+
+    useEffect(() => {
+        if (user?.children) {
+            getGeneralInformationChildren(user?.children)
+        }
+    }, [])
 
 
     useEffect(() => {
-        if (children.length > 0 && !childrenSelected) {
-          setChildrenSelected(children[0]);
+        if (children && children.length > 0 && !childrenSelected) {
+            setChildrenSelected(children[0]);
         }
-      }, [children, childrenSelected]);
+    }, [children, childrenSelected]);
 
 
     useEffect(() => {
