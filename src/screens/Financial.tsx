@@ -309,7 +309,7 @@ export function Financial() {
 
                             {monthlyPaymentSelected?.status === 'Boleto em aberto' &&
                                 <Button
-                                    title='Cópiar código de barra'
+                                    title='Copiar código de barra'
                                     mb={4}
                                     onPress={() => {
                                         console.log('fazendo o download')
