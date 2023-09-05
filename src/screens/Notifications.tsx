@@ -66,7 +66,7 @@ export function Notifications() {
                     </Text>
                 </HStack>
             </TouchableOpacity>
-            <VStack bg="gray.200" h={0.4} w="100%" />
+            <VStack bg="gray.200" h={0.5} w="100%" />
         </Box>
     );
 
