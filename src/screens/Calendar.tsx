@@ -5,6 +5,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Header } from "@components/Header";
 import { Calendar as CalendarComponent, CalendarUtils, LocaleConfig, DateData } from 'react-native-calendars';
 import { Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
+import { useAuth } from "@hooks/auth";
+import Api from "../helpers/Api";
 
 LocaleConfig.locales['pt-br'] = {
     monthNames: [
@@ -50,6 +52,8 @@ interface PropsDatas {
 export function Calendar() {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
+    const api = Api();
+    const { user } = useAuth()
     const [initialDate, setInitialDate] = useState('');
     const [key, setKey] = useState('');
 
@@ -59,36 +63,37 @@ export function Calendar() {
 
     const [datasFiltradas, setDatasFiltradas] = useState<PropsDatas[]>();
 
-    const datasMarcadas: PropsDatas[] = [
+    const [datasMarcadas, setDatasMarcadas] = useState<PropsDatas[]>([])
+    /* const datasMarcadas: PropsDatas[] = [
         {
             idAluno: 'aaaabbbb111',
             name: 'Luiz Fellipe',
-            data: '22/07/2023',
+            data: '22/12/2023',
             message: 'Prova de matematica',
             time: '07:58'
         },
         {
             idAluno: 'aaaabbbb111',
             name: 'Luiz Fellipe',
-            data: '15/07/2023',
+            data: '15/12/2023',
             message: 'Prova de matematica',
             time: '07:58'
         },
         {
             idAluno: 'aaaabbbb111',
             name: 'Luiz Fellipe',
-            data: '30/07/2023',
+            data: '30/12/2023',
             message: 'Prova de portugues',
             time: '09:50'
         },
         {
             idAluno: 'bbbbccc222',
             name: 'Maria Laura',
-            data: '02/08/2023',
+            data: '02/12/2023',
             message: 'Feira de ciência',
             time: '10:30'
         }
-    ];
+    ]; */
 
     //quando clicar no dia que precisa mostrar as informaçoes do dia
     function handleDayPress(date: DateData) {
@@ -128,35 +133,48 @@ export function Calendar() {
 
     useEffect(() => {
         if (isFocused) {
-            //forcar no mes vigente
-            const dataAtual = new Date();
-            const dia = dataAtual.getDate();
-            const mes = dataAtual.getMonth() + 1;
-            const ano = dataAtual.getFullYear();
-            const dataFormatada = `${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}`;
 
-            setInitialDate(dataFormatada);
-            const novaKey = Math.random().toString();
-            setKey(novaKey);
+            let auxCalendarInfo: any = []
+            const calendarInfo = async (idAlunos: string[]) => {
+                const json = await api.getCalendar(idAlunos)
+                console.log('json', json)
 
-            //carregar as datas do banco de dados e adicionar no calendario
-            const updatedMarkedDates = datasMarcadas.reduce((prevMarkedDates: MarkedDates, data) => {
-                const { data: dataMarcada } = data;
-                const [dia, mes, ano] = dataMarcada.split('/');
-                const dataFormatada2 = `${ano}-${mes}-${dia}`;
-                prevMarkedDates[dataFormatada2] = {
-                    marked: true,
-                    dotColor: "#8257E6",
-                };
+                if (json) {
+                    setDatasMarcadas(json!)
 
-                return prevMarkedDates;
-            }, {});
+                    //forcar no mes vigente
+                    const dataAtual = new Date();
+                    const dia = dataAtual.getDate();
+                    const mes = dataAtual.getMonth() + 1;
+                    const ano = dataAtual.getFullYear();
+                    const dataFormatada = `${ano}-${mes < 10 ? '0' + mes : mes}-${dia < 10 ? '0' + dia : dia}`;
 
-            setMarkedDatesAux(updatedMarkedDates);
-            setSelectedDate(dataFormatada);
-            setMarkedDates(updatedMarkedDates);
+                    setInitialDate(dataFormatada);
+                    const novaKey = Math.random().toString();
+                    setKey(novaKey);
+
+                    //carregar as datas do banco de dados e adicionar no calendario
+                    const updatedMarkedDates = json.reduce((prevMarkedDates: MarkedDates, data: any) => {
+                        const { data: dataMarcada } = data;
+                        const [dia, mes, ano] = dataMarcada.split('/');
+                        const dataFormatada2 = `${ano}-${mes}-${dia}`;
+                        prevMarkedDates[dataFormatada2] = {
+                            marked: true,
+                            dotColor: "#8257E6",
+                        };
+
+                        return prevMarkedDates;
+                    }, {});
+
+                    setMarkedDatesAux(updatedMarkedDates);
+                    setSelectedDate(dataFormatada);
+                    setMarkedDates(updatedMarkedDates);
+                }
+            }
+            calendarInfo(user?.children!)
         }
     }, [isFocused]);
+
 
 
     //pegar a data selecionada e mostrar no calendario

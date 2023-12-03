@@ -1,11 +1,19 @@
 import { auth, db } from '../config/firebase';
-import { getDoc, getDocs, doc, collection, addDoc, serverTimestamp  } from 'firebase/firestore';
+import { getDoc, getDocs, doc, collection, addDoc, serverTimestamp, query, where, Timestamp } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { DocumentSnapshot } from 'firebase/firestore';
+
 import { childrenProps } from '../types/children'
 import { monthlyPaymentProps } from '../types/monthlyPayment'
 import { FormsendContactMessageProps } from '@screens/Contacts';
 
-
+type calendarEventsType = {
+    idAluno: string;
+    name: string;
+    message: string;
+    data: string;
+    time: string;
+}
 
 
 const Api = {
@@ -136,7 +144,42 @@ const Api = {
                 message: 'Erro ao enviar mensagem de contato.'
             }
         }
+    },
+    getCalendar: async (idAlunos: string[]) => {
+        try {
+            const calendarCollectionRef = collection(db, 'calendar');
+            const querySnapshot = await getDocs(calendarCollectionRef);
+
+            const filteredEvents: calendarEventsType[] = [];
+
+
+            querySnapshot.forEach((doc) => {
+                const eventData = doc.data() as calendarEventsType;
+
+                if (idAlunos.includes(eventData.idAluno)) {
+                    // Adicione à array apenas se o idAluno estiver na lista
+                    filteredEvents.push({
+                        idAluno: eventData.idAluno,
+                        name: eventData.name,
+                        message: eventData.message,
+                        data: eventData.data,
+                        time: eventData.time
+                    });
+
+                    // Print the document data to the console
+                    console.log('Document data:', doc.id, eventData);
+                }
+            });
+
+            console.log('resultado finaaal: ', filteredEvents)
+            return filteredEvents
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
+
+
+
 
 }
 
