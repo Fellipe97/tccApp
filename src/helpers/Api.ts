@@ -1,8 +1,11 @@
 import { auth, db } from '../config/firebase';
-import { getDoc, getDocs, doc, collection } from 'firebase/firestore';
+import { getDoc, getDocs, doc, collection, addDoc, serverTimestamp  } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { childrenProps } from '../types/children'
 import { monthlyPaymentProps } from '../types/monthlyPayment'
+import { FormsendContactMessageProps } from '@screens/Contacts';
+
+
 
 
 const Api = {
@@ -90,7 +93,7 @@ const Api = {
                             const month = String(date.getMonth() + 1).padStart(2, '0');
                             const year = date.getFullYear();
                             studentData.pay_day = `${day}/${month}/${year}`
-                        }else{
+                        } else {
                             studentData.pay_day = 'Indisponível'
                         }
                         monthlyPayment.push(studentData as monthlyPaymentProps);
@@ -100,6 +103,38 @@ const Api = {
             return monthlyPayment
         } catch (error) {
             console.error('Erro: ', error);
+        }
+    },
+
+    sendContactMessage: async (userId: string, data: FormsendContactMessageProps) => {
+        let success = {
+            success: true,
+            message: ''
+        }
+        try {
+            // Adicionar a mensagem à coleção contactMessage
+            const contactMessageRef = collection(db, 'contactMessage');
+            await addDoc(contactMessageRef, {
+                userId,
+                email: data.email,
+                message: data.message,
+                name: data.name,
+                phone: data.phone,
+                timestamp: serverTimestamp(),
+            });
+
+            console.log('Mensagem de contato enviada com sucesso!');
+            return success = {
+                success: true,
+                message: 'Mensagem de contato enviada com sucesso!'
+            }
+        } catch (error) {
+            console.error('Erro ao enviar mensagem de contato:', error);
+            // Tratativas adicionais, se necessário
+            return success = {
+                success: false,
+                message: 'Erro ao enviar mensagem de contato.'
+            }
         }
     }
 

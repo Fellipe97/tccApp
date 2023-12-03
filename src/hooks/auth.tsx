@@ -215,6 +215,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
         await reauthenticateWithCredential(userCurrent!, credential)
             .then(() => {
+                setIsLoadingRedefinePassword(true)
                 console.log('Senha está correta')
                 updatePassword(userCurrent!, newPassword)
                     .then(() => {

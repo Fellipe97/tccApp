@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { TextInput, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { ScrollView, Text, VStack, useToast } from "native-base";
 
@@ -54,21 +54,31 @@ export function RedefinePassword() {
     const passwordRef = useRef<TextInput>(null);
     const newPasswordRef = useRef<TextInput>(null);
     const { redefinePasswordLogged, isLoadingRedefinePassword } = useAuth()
+    const [loadingButton, setLoadingButton] = useState(false)
+
 
 
 
     const {
         control: redefinePasswordControl,
         handleSubmit: handleRedefinePasswordSubmit,
-        formState: { errors: redefinePasswordErrors }
+        formState: { errors: redefinePasswordErrors },
+        reset
     } = useForm<FormDataPropsRedefinePassword>({
         resolver: yupResolver(redefinePassword)
     });
 
     async function handleRedefinePassword({ passwordOld, passwordNew, confirmPasswordNew }: FormDataPropsRedefinePassword) {
+        setLoadingButton(true)
         toast.closeAll();
         console.log(passwordOld, passwordNew, confirmPasswordNew)
         await redefinePasswordLogged(passwordOld, confirmPasswordNew)
+        reset({
+            passwordOld: passwordOld,
+            passwordNew: '',
+            confirmPasswordNew: ''
+        });
+        setLoadingButton(false)
     }
 
     return (
@@ -136,7 +146,7 @@ export function RedefinePassword() {
                         title="Salvar"
                         mt={5}
                         onPress={handleRedefinePasswordSubmit(handleRedefinePassword)}
-                        isLoading={isLoadingRedefinePassword}
+                        isLoading={loadingButton}
                     />
                 </VStack>
             </VStack>
