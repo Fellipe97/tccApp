@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { TextInput, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { ScrollView, Text, VStack } from "native-base";
+import { ScrollView, Text, VStack, useToast } from "native-base";
 
 
 import { Header } from "@components/Header";
@@ -8,9 +8,11 @@ import Input from "@components/Input";
 import { Button } from "@components/Button";
 
 
+
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
+import { useAuth } from '@hooks/auth';
 
 
 type FormDataPropsRedefinePassword = {
@@ -22,11 +24,18 @@ type FormDataPropsRedefinePassword = {
 const redefinePassword = yup.object({
     passwordOld: yup
         .string()
-        .required('Informe a senha antiga.'),
+        .required('Informe a senha antiga.')
+        .min(6, 'A senha deve ter pelo menos 6 dígitos.'),
     passwordNew: yup
         .string()
         .required('Informe a senha nova.')
-        .min(6, 'A senha deve ter pelo menos 6 dígitos.'),
+        .min(6, 'A senha deve ter pelo menos 6 dígitos.')
+        .test('passwords-match', 'As senhas não coincidem.', function (value) {
+            return value === this.resolve(yup.ref('passwordNew'));
+        })
+        .test('passwords-match', 'A senha é igual a senha antiga.', function (value) {
+            return value !== this.resolve(yup.ref('passwordOld'));
+        }),
     confirmPasswordNew: yup
         .string()
         .required('Confirme a senha nova.')
@@ -41,8 +50,11 @@ const redefinePassword = yup.object({
 });
 
 export function RedefinePassword() {
+    const toast = useToast();
     const passwordRef = useRef<TextInput>(null);
     const newPasswordRef = useRef<TextInput>(null);
+    const { redefinePasswordLogged, isLoadingRedefinePassword } = useAuth()
+
 
 
     const {
@@ -53,8 +65,10 @@ export function RedefinePassword() {
         resolver: yupResolver(redefinePassword)
     });
 
-    function handleRedefinePassword({ passwordOld, passwordNew, confirmPasswordNew }: FormDataPropsRedefinePassword) {
+    async function handleRedefinePassword({ passwordOld, passwordNew, confirmPasswordNew }: FormDataPropsRedefinePassword) {
+        toast.closeAll();
         console.log(passwordOld, passwordNew, confirmPasswordNew)
+        await redefinePasswordLogged(passwordOld, confirmPasswordNew)
     }
 
     return (
@@ -122,6 +136,7 @@ export function RedefinePassword() {
                         title="Salvar"
                         mt={5}
                         onPress={handleRedefinePasswordSubmit(handleRedefinePassword)}
+                        isLoading={isLoadingRedefinePassword}
                     />
                 </VStack>
             </VStack>

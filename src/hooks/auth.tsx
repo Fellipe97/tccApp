@@ -9,8 +9,9 @@ import {
 import { useToast } from 'native-base'
 import { auth, db } from '../config/firebase';
 import { getDoc, doc } from 'firebase/firestore';
-import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 
 type User = {
@@ -30,6 +31,7 @@ type AuthContextData = {
     signIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
     redefinePassword: (email: string) => Promise<void>;
+    redefinePasswordLogged: (oldPassword: string, newPassword: string) => Promise<void>;
     user: User | null;
     isLoadingSigIn: boolean;
     isLoadingStorage: boolean;
@@ -187,7 +189,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                 else if (error.code == 'auth/user-not-found') {
                     errorMessage = 'Usuário não cadastrado.'
                 }
-                else{
+                else {
                     errorMessage = 'Não foi possível enviar e-mail para redefinição de senha.'
                 }
                 console.log(error)
@@ -203,6 +205,82 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     }
 
+    async function redefinePasswordLogged(oldPassword: string, newPassword: string) {
+        toast.closeAll();
+        setIsLoadingRedefinePassword(true)
+
+        const userCurrent = auth.currentUser;
+
+        const credential = EmailAuthProvider.credential(userCurrent?.email!, oldPassword);
+
+        await reauthenticateWithCredential(userCurrent!, credential)
+            .then(() => {
+                console.log('Senha está correta')
+                updatePassword(userCurrent!, newPassword)
+                    .then(() => {
+                        return toast.show({
+                            title: 'Redefinir senha',
+                            description: 'Senha redefinida com sucesso.',
+                            placement: 'top',
+                            bgColor: 'emerald.500'
+                        })
+                    })
+                    .catch((error) => {
+                        let errorTitle = 'Redefinir senha'
+                        let errorMessage = ''
+
+                        if (error.code == 'auth/network-request-failed') {
+                            errorMessage = 'Falha de conexão ao se conectar ao banco de dados.'
+                        }
+                        if (error.code == 'auth/invalid-email') {
+                            errorMessage = 'E-mail digitado inválido.'
+                        }
+                        else if (error.code == 'auth/user-not-found') {
+                            errorMessage = 'Usuário não cadastrado.'
+                        }
+                        else {
+                            errorMessage = 'Não foi possível enviar e-mail para redefinição de senha.'
+                        }
+                        console.log(error)
+                        return toast.show({
+                            title: errorTitle,
+                            description: errorMessage,
+                            placement: 'top',
+                            bgColor: 'red.500'
+                        })
+                    }).finally(
+                        () => setIsLoadingRedefinePassword(false)
+                    );
+
+            })
+            .catch((error) => {
+                let errorTitle = 'Redefinir senha'
+                let errorMessage = ''
+
+                if (error.code == 'auth/network-request-failed') {
+                    errorMessage = 'Falha de conexão ao se conectar ao banco de dados.'
+                }
+                if (error.code == 'auth/invalid-email') {
+                    errorMessage = 'E-mail digitado inválido.'
+                }
+                else if (error.code == 'auth/user-not-found') {
+                    errorMessage = 'Usuário não cadastrado.'
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'Senha antiga incorreta.';
+                } else {
+                    errorMessage = 'Erro durante a reautenticação.';
+                }
+                console.log(error)
+                setIsLoadingRedefinePassword(false)
+                return toast.show({
+                    title: errorTitle,
+                    description: errorMessage,
+                    placement: 'top',
+                    bgColor: 'red.500'
+                })
+            })
+    }
+
     useEffect(() => {
         loadUserSorageData();
     }, [])
@@ -212,6 +290,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             signIn,
             signOut,
             redefinePassword,
+            redefinePasswordLogged,
             isLoadingSigIn,
             isLoadingStorage,
             isLoadingRedefinePassword,
