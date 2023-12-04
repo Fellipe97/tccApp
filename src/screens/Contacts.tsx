@@ -99,7 +99,19 @@ export function Contacts() {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <VStack mt={7} flex={1} px={8} pb={7}>
                     <VStack flex={1}>
-                        {/* ... existing code ... */}
+
+                        <HStack /* bg={'red.100'} */ justifyContent={'space-between'}>
+                            <VStack /* bg={'green.100'} */ alignItems={'center'}>
+                                <Text fontFamily={'heading'} fontSize={'xl'}>Telefone</Text>
+                                <Text mt={3} color={'purple.600'} fontSize={'md'} fontFamily={'heading'}>(21) 12345-6789</Text>
+                                <Text color={'purple.600'} fontSize={'md'} fontFamily={'heading'}>(21) 98765-4321</Text>
+                            </VStack>
+                            <VStack /* bg={'blue.100'} */ alignItems={'center'}>
+                                <Text fontFamily={'heading'} fontSize={'xl'}>Whatsapp</Text>
+                                <Text mt={3} color={'purple.600'} fontSize={'md'} fontFamily={'heading'}>(21) 98765-4321</Text>
+                            </VStack>
+                        </HStack>
+
                         <VStack mt={6} alignItems={"center"}>
                             <Text fontFamily={"heading"} fontSize={"xl"}>
                                 ENVIE UMA MENSAGEM
