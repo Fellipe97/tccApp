@@ -13,44 +13,20 @@ export function Notifications() {
 
     const notificacoes = [
         {
-            foto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            foto: 'https://firebasestorage.googleapis.com/v0/b/uerj-tcc.appspot.com/o/photograph%2FWf3dXr6IHRQb8aZMLJgp.jpeg?alt=media&token=38035641-9b96-4a3f-91ae-8aa893666772',
             texto: 'Atenção! Não perca o dia do vencimento do seu boleto!'
         },
         {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
+            foto: 'https://firebasestorage.googleapis.com/v0/b/uerj-tcc.appspot.com/o/photograph%2FTxquPuSseEdBXsZJcYen.jpg?alt=media&token=c1efb070-281a-4b41-b924-2e8b4be176ae',
+            texto: 'Pedro Henrique entrou na escola às 8:19 do dia 29/04/2023'
         },
         {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
+            foto: 'https://firebasestorage.googleapis.com/v0/b/uerj-tcc.appspot.com/o/photograph%2FWf3dXr6IHRQb8aZMLJgp.jpeg?alt=media&token=38035641-9b96-4a3f-91ae-8aa893666772',
+            texto: 'Pedro Henrique entrou na escola às 8:10 do dia 28/04/2023'
         },
         {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
-        },
-        {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
-        },
-        {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
-        },
-        {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
-        },
-        {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
-        },
-        {
-            foto: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 28/04/2023'
-        },
-        {
-            foto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-            texto: 'Evento X em nossa escola essa semana. Contamos com sua presença!'
+            foto: 'https://firebasestorage.googleapis.com/v0/b/uerj-tcc.appspot.com/o/photograph%2FTxquPuSseEdBXsZJcYen.jpg?alt=media&token=c1efb070-281a-4b41-b924-2e8b4be176ae',
+            texto: 'Pedro Henrique entrou na escola às 8:13 do dia 24/04/2023'
         }
     ]
 

@@ -54,7 +54,7 @@ export function HeaderHome({ nameUser, nameSchool }: Props) {
         >
             {/* <HeaderHomeSvg width={'100%'}> */}
             <Text mt={2} fontSize={'xl'} bold color={'gray.100'}>{dayPeriod}, {nameUser}</Text>
-            <Text fontSize={'md'} color={'gray.200'} mb={4} mt={1}>{nameSchool}</Text>
+            <Text fontSize={'md'} color={'black'} mb={4} mt={1}>{nameSchool}</Text>
             {/* </HeaderHomeSvg> */}
         </VStack>
     )
