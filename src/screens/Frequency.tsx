@@ -11,6 +11,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import { VictoryPie } from 'victory-native'
 
+import { childrenProps } from "../types/children";
+import Api from "../helpers/Api";
+import { useAuth } from "@hooks/auth";
+
 
 type propsChildren = {
     id: string;
@@ -39,9 +43,12 @@ type propsChartPie = {
 
 export function Frequency() {
     const navigation = useNavigation();
+    const api = Api();
+    const { user } = useAuth()
     const [dataPie, setDataPie] = useState<propsChartPie | null>(null);
 
-    const children: propsChildren[] = [
+    const [children, setChildren] = useState<childrenProps[] | null>(null)
+    /* const children: propsChildren[] = [
         {
             id: 'aaaaaaa111111',
             name: 'Maria Laura da Silva Oliveira',
@@ -72,35 +79,37 @@ export function Frequency() {
             id_grade: 'ensino_Fundamental_II',
             photograph: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
         },
-    ]
+    ] */
 
     const presences: propsPresences[] = [
         {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Portugues',
+            idChildren: 'TxquPuSseEdBXsZJcYen',
+            school_subject: 'Português',
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
             presence: 15
         },
         {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Portugues',
-            grade: '4,8',
-            bimester: 1,
-            total_classes: 30,
-            presence: 16
-        },
-        {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Portugues',
+            idChildren: 'TxquPuSseEdBXsZJcYen',
+            school_subject: 'Matemática',
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
             presence: 20
         },
         {
-            idChildren: 'aaaaaaa111111',
+            idChildren: 'TxquPuSseEdBXsZJcYen',
+            school_subject: 'História',
+            grade: '4,8',
+            bimester: 1,
+            total_classes: 30,
+            presence: 17
+        },
+
+
+        {
+            idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             school_subject: 'Portugues',
             grade: '4,8',
             bimester: 1,
@@ -108,60 +117,20 @@ export function Frequency() {
             presence: 25
         },
         {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Portugues',
+            idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
+            school_subject: 'Matemática',
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
-            presence: 15
+            presence: 22
         },
         {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Portugues',
+            idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
+            school_subject: 'História',
             grade: '4,8',
             bimester: 1,
             total_classes: 30,
-            presence: 15
-        },
-        {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Portugues',
-            grade: '4,8',
-            bimester: 1,
-            total_classes: 30,
-            presence: 15
-        },
-        {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Matematica',
-            grade: '8,8',
-            bimester: 2,
-            total_classes: 30,
-            presence: 29
-        },
-        {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Fisica',
-            grade: '9,8',
-            bimester: 3,
-            total_classes: 30,
-            presence: 28
-        },
-        {
-            idChildren: 'aaaaaaa111111',
-            school_subject: 'Educacao Fisica',
-            grade: '9,8',
-            bimester: 1,
-            total_classes: 30,
-            presence: 20
-        },
-        {
-            idChildren: 'bbbbbbb2222222',
-            school_subject: 'Historia',
-            grade: '1,8',
-            bimester: 1,
-            total_classes: 30,
-            presence: 27
+            presence: 19
         }
     ]
 
@@ -184,11 +153,11 @@ export function Frequency() {
     }
 
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (children.length > 0 && !childrenSelected) {
             setChildrenSelected(children[0]);
         }
-    }, [children, childrenSelected]);
+    }, [children, childrenSelected]); */
 
 
     useEffect(() => {
@@ -219,6 +188,25 @@ export function Frequency() {
     }, [childrenSelected])
 
 
+    const getGeneralInformationChildren = async (tokens: string[]) => {
+        let resp = await api.getGeneralInformationChildren(tokens)
+        if (resp) {
+            setChildren(resp)
+        }
+    }
+
+    useEffect(() => {
+        if (user?.children) {
+            getGeneralInformationChildren(user?.children)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (children && children.length > 0 && !childrenSelected) {
+            setChildrenSelected(children[0]);
+        }
+    }, [children, childrenSelected]);
+
     return (
         <VStack flex={1}>
             <Header
@@ -239,7 +227,7 @@ export function Frequency() {
                     renderItem={({ item }) => (
                         <ScrollViewChildren
                             item={item}
-                            
+
                             isActive={childrenSelected?.name == item.name}
 
                             onPress={() => {
@@ -252,6 +240,7 @@ export function Frequency() {
                     maxH={110}
                     minH={110}
                 />
+
 
                 <VStack
                     bg={'gray.100'}
@@ -302,7 +291,7 @@ export function Frequency() {
                                         </HStack>
                                     </VStack>
                                 )
-                            )
+                                )
                         }
                     </ScrollView>
 
@@ -337,13 +326,13 @@ export function Frequency() {
                                     fontFamily={'heading'}
                                     fontSize={'lg'}
                                     color={'green.700'}
-                                >Presença - {dataPie.presence * 100 / dataPie.total_classes + '%'}</Text>
+                                >Presença - {(dataPie.presence * 100 / dataPie.total_classes).toFixed(2) + '%'}</Text>
                                 <Text
                                     fontFamily={'heading'}
                                     fontSize={'lg'}
                                     color={'red.700'}
                                     mt={2}
-                                >Ausencia - {dataPie.absences * 100 / dataPie.total_classes + '%'}</Text>
+                                >Ausencia - {(dataPie.absences * 100 / dataPie.total_classes).toFixed(2) + '%'}</Text>
                             </VStack>
 
                         </HStack>

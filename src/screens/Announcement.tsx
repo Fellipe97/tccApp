@@ -72,27 +72,27 @@ export function Announcement() {
         {
             idChildren: 'TxquPuSseEdBXsZJcYen',
             icon: '',
-            message: 'Seu filho(a) está sem lápis de cor.'
+            message: 'Seu filho está sem lápis de cor.'
         },
         {
             idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             icon: '',
-            message: 'Seu filho(a) esqueceu o livro em casa.'
+            message: 'Sua filha esqueceu o livro em casa.'
         },
         {
             idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             icon: '',
-            message: 'A turma irá fazer uma atividade que precisará trazer cola.'
+            message: 'Não copiou a matéria.'
         },
         {
             idChildren: 'TxquPuSseEdBXsZJcYen',
             icon: '',
-            message: 'Seu filho(a) não fez a tarefa de casa.'
+            message: 'Seu filho não fez a tarefa de casa.'
         },
         {
             idChildren: 'Wf3dXr6IHRQb8aZMLJgp',
             icon: '',
-            message: 'Seu filho(a) derramou o suco do lance.'
+            message: 'Sua filha não fez a tarefa de casa.'
         },
     ]
 
